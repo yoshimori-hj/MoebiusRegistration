@@ -53,7 +53,7 @@ REGISTER_TARGET=Register
 
 
 
-CFLAGS += -fpermissive -fopenmp -Wno-deprecated -std=c++11
+CFLAGS += -fopenmp -Wno-deprecated -std=c++11
 LFLAGS += -lgomp -lfftw3 -lfftw3f
 
 CFLAGS_DEBUG = -DDEBUG -g3
