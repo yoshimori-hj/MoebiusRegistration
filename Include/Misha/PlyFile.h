@@ -89,7 +89,7 @@ extern "C" {
 	
 typedef struct PlyProperty {    /* description of a property */
 	
-	const char *name;                     /* property name */
+	char *name;                           /* property name */
 	int external_type;                    /* file's data type */
 	int internal_type;                    /* program's data type */
 	int offset;                           /* offset bytes of prop in a struct */
@@ -102,7 +102,7 @@ typedef struct PlyProperty {    /* description of a property */
 } PlyProperty;
 
 typedef struct PlyElement {     /* description of an element */
-	const char *name;             /* element name */
+	char *name;                   /* element name */
 	int num;                      /* number of elements in this object */
 	int size;                     /* size of element (bytes) or -1 if variable */
 	int nprops;                   /* number of properties for this element */
@@ -113,7 +113,7 @@ typedef struct PlyElement {     /* description of an element */
 } PlyElement;
 
 typedef struct PlyOtherProp {   /* describes other properties in an element */
-	const char *name;             /* element name */
+	char *name;                   /* element name */
 	int size;                     /* size of other_props */
 	int nprops;                   /* number of properties in other_props */
 	PlyProperty **props;          /* list of properties in other_props */

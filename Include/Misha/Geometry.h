@@ -341,7 +341,7 @@ public:
 
 	//////////////////////////
 	// Vector space methods //
-	void Add            ( const LinearFunction& lf ) { this->gradient += lf.gradient , offset += lf.offset; }
+	void Add            ( const LinearFunction& lf ) { this->gradients += lf.gradients , offset += lf.offset; }
 	void Scale          ( _R s ) { gradients *= s , offset *= s; }
 	//////////////////////////
 };
@@ -834,7 +834,7 @@ void BarycentricCoordinates( const Point< Real , Dim >& p , const Point< Real , 
 template< class Real , int Count >
 void BarycentricCoordinates( const Point3D< Real >& p , const Point3D< Real > v[Count] , Real a[Count] , bool inside=false )
 {
-	return BarycentricCoordinatesImplementation< Real , Count >::template BarycentricCoordinates( p , v , a , inside );
+	return BarycentricCoordinatesImplementation< Real , Count >::BarycentricCoordinates( p , v , a , inside );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -981,8 +981,8 @@ int PlyReadPolygons( const char* fileName,
 			for( int i=0 ; i<pPropertyNum ; i++ )
 			{
 				PlyProperty plyProperty = pProperties[i];
-				plyProperty.offset += offsetof( PlyFaceWithData< PolygonData > , PlyFaceWithData< PolygonData >::pData );
-				if( plyProperty.is_list ) plyProperty.count_offset += offsetof( PlyFaceWithData< PolygonData > , PlyFaceWithData< PolygonData >::pData );
+				plyProperty.offset += offsetof( PlyFaceWithData< PolygonData > , pData );
+				if( plyProperty.is_list ) plyProperty.count_offset += offsetof( PlyFaceWithData< PolygonData > , pData );
 				bool hasProperty = ply_get_property( ply , elem_name , &plyProperty );
 				if( pPropertiesFlag ) pPropertiesFlag[i] = hasProperty;
 			}
