@@ -124,7 +124,7 @@ $(BIN)%.o: $(LIBRARY_SRC)%.c
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(BIN)%.o: $(LIBRARY_SRC)%.cpp
-	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
+	$(CXX) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(BIN)%.o: $(SRC)%.cpp
 	$(CXX) -c -o $@ $(CFLAGS) $(INCLUDE) $<
@@ -133,7 +133,7 @@ $(OBJECTS)%.o: $(LIBRARY_SRC)%.c
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(OBJECTS)%.o: $(LIBRARY_SRC)%.cpp
-	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
+	$(CXX) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(OBJECTS)%.o: $(SRC)%.cpp
 	$(CXX) -c -o $@ $(CFLAGS) $(INCLUDE) $<
