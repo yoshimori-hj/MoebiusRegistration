@@ -50,7 +50,7 @@
 #ifndef _ROTATESO3_H
 #define _ROTATESO3_H 1
 
-/* #include "complex.h"  /* needed to define REAL */
+/* #include "complex.h" */ /* needed to define REAL */
 
 extern void genExp( int ,
 		    REAL ,
