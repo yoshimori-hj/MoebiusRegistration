@@ -52,9 +52,8 @@ REGISTER_TARGET=Register
 
 
 
-
-CFLAGS += -fopenmp -Wno-deprecated -std=c++11
-LFLAGS += -lgomp -lfftw3 -lfftw3f
+CFLAGS += -fopenmp -Wno-deprecated -std=c++11 $(shell pkg-config --cflags-only-other fftw3 fftw3f)
+LFLAGS += -fopenmp $(shell pkg-config --libs fftw3 fftw3f)
 
 CFLAGS_DEBUG = -DDEBUG -g3
 LFLAGS_DEBUG =
@@ -64,7 +63,7 @@ LFLAGS_RELEASE = -O3 -g
 
 BIN = Bin/Linux/
 OBJECTS = Bin/Linux/Objects/
-INCLUDE = /usr/local/include/ -IInclude
+INCLUDE = -IInclude -IEigen3 -ISOFT1.0 $(shell pkg-config --cflags-only-I fftw3 fftw3f)
 
 CC=gcc
 CXX=g++
@@ -109,9 +108,6 @@ $(BIN):
 	$(MD) -p $(OBJECTS)$(PARAMETRIZATION_TARGET)
 	$(MD) -p $(OBJECTS)$(SPHERE_MAP_TARGET)
 	$(MD) -p $(OBJECTS)$(REGISTER_TARGET)
-	
-	
-	
 
 $(BIN)$(SOFT_TARGET): $(SOFT_OBJECTS)
 
@@ -131,7 +127,7 @@ $(BIN)%.o: $(LIBRARY_SRC)%.cpp
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(BIN)%.o: $(SRC)%.cpp
-	$(CXX) -c -o $@ $(CFLAGS) -I$(INCLUDE) $<
+	$(CXX) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(OBJECTS)%.o: $(LIBRARY_SRC)%.c
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
@@ -140,4 +136,4 @@ $(OBJECTS)%.o: $(LIBRARY_SRC)%.cpp
 	$(CC) -c -o $@ $(CFLAGS) $(INCLUDE) $<
 
 $(OBJECTS)%.o: $(SRC)%.cpp
-	$(CXX) -c -o $@ $(CFLAGS) -I$(INCLUDE) $<
+	$(CXX) -c -o $@ $(CFLAGS) $(INCLUDE) $<
