@@ -44,24 +44,30 @@
 #ifndef _NAIVE_SYNTHESIS_H
 #define _NAIVE_SYNTHESIS_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void Naive_Synthesize( int ,
 			      int ,
 			      double *,
 			      double *,
 			      double *);
 
+SOFT_DECL
 extern void Naive_SynthesizeX( double *,
 			       int ,
 			       int ,
 			       double *,
 			       double *);
 
+SOFT_DECL
 extern void Naive_Analysis( int ,
 			    int ,
 			    double *,
 			    double *,
 			    double *);
 
+SOFT_DECL
 extern void Naive_AnalysisX( double *,
 			     int ,
 			     int ,
@@ -69,6 +75,7 @@ extern void Naive_AnalysisX( double *,
 			     double *,
 			     double *);
 
+SOFT_DECL
 extern void Naive_Analysis_Timing( double *,
 				   int ,
 				   int ,
@@ -78,6 +85,7 @@ extern void Naive_Analysis_Timing( double *,
 				   int ,
 				   double *);
 
+SOFT_DECL
 extern void Naive_Analysis_TimingX( double *,
 				    int ,
 				    int ,

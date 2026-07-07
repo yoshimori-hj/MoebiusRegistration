@@ -55,6 +55,12 @@
 #ifndef _SOFT_FFTW_WO_H
 #define _SOFT_FFTW_WO_H 1
 
+#include "complex.h"
+#include "soft_module.h"
+
+#include <fftw3.h>
+
+SOFT_DECL
 extern void Forward_SO3_Naive_fftw_wo( int ,
 				       fftw_complex * ,
 				       fftw_complex * ,
@@ -63,6 +69,7 @@ extern void Forward_SO3_Naive_fftw_wo( int ,
 				       fftw_plan * ,
 				       int ) ;
 
+SOFT_DECL
 extern void Inverse_SO3_Naive_fftw_wo( int ,
 				       fftw_complex * ,
 				       fftw_complex * ,

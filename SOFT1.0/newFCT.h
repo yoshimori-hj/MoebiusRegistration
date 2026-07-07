@@ -36,11 +36,12 @@
   ************************************************************************
   ************************************************************************/
 
-
 /* externally available commands from newFCT.c */
 
 #ifndef _NEWFCT_H
 #define _NEWFCT_H
+
+#include "soft_module.h"
 
 /* structure for making things parallel */
 #ifndef _STRUCT_LOWHIGH
@@ -53,12 +54,14 @@ struct lowhigh{
 
 #endif /* _STRUCT_LOWHIGH */
 
+SOFT_DECL
 extern void ExpIFCT( double * ,
 		     double * ,
 		     double * ,
 		     int ,
 		     int ,
 		     int );
+SOFT_DECL
 extern void ExpIFCT( float * ,
 		     float * ,
 		     float * ,
@@ -66,12 +69,14 @@ extern void ExpIFCT( float * ,
 		     int ,
 		     int );
 
+SOFT_DECL
 extern void kFCT(double *,
 		 double *,
 		 double *,
 		 int ,
 		 int ,
 		 int );
+SOFT_DECL
 extern void kFCT(float *,
 		 float *,
 		 float *,
@@ -79,6 +84,7 @@ extern void kFCT(float *,
 		 int ,
 		 int );
 
+SOFT_DECL
 extern void kFCTX( double *,
 		   double *,
 		   double *,

@@ -57,6 +57,12 @@
 #ifndef _WIGNERTRANSFORMS_FFTW_H
 #define _WIGNERTRANSFORMS_FFTW_H 1
 
+#include "complex.h"
+#include "soft_module.h"
+
+#include <fftw3.h>
+
+SOFT_DECL
 extern void wigNaiveAnalysis_fftw( int ,
 				   int ,
 				   int ,
@@ -65,6 +71,7 @@ extern void wigNaiveAnalysis_fftw( int ,
 				   fftw_complex * ,
 				   fftw_complex *  ) ;
 
+SOFT_DECL
 extern void wigNaiveAnalysis_fftwX( int ,
 				    int ,
 				    int ,
@@ -73,6 +80,7 @@ extern void wigNaiveAnalysis_fftwX( int ,
 				    fftw_complex * ,
 				    fftw_complex *  ) ;
 
+SOFT_DECL
 extern void wigNaiveAnalysis_fftwY( int ,
 				    int ,
 				    int ,
@@ -81,6 +89,7 @@ extern void wigNaiveAnalysis_fftwY( int ,
 				    fftw_complex * ,
 				    fftw_complex *  ) ;
 
+SOFT_DECL
 extern void wigNaiveSynthesis_fftw( int ,
 				    int ,
 				    int ,
@@ -89,6 +98,7 @@ extern void wigNaiveSynthesis_fftw( int ,
 				    fftw_complex * ,
 				    fftw_complex * ) ;
 
+SOFT_DECL
 extern void wigNaiveSynthesis_fftwX( int ,
 				     int ,
 				     int ,
@@ -97,6 +107,7 @@ extern void wigNaiveSynthesis_fftwX( int ,
 				     fftw_complex * ,
 				     fftw_complex *  ) ;
 
+SOFT_DECL
 extern void wigNaiveSynthesis_fftwY( int ,
 				     int ,
 				     int ,

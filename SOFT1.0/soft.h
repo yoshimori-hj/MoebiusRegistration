@@ -52,6 +52,9 @@
 #ifndef _SOFT_H
 #define _SOFT_H 1
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void Forward_SO3_Naive( int ,
 			       double * ,
 			       double * ,
@@ -61,6 +64,7 @@ extern void Forward_SO3_Naive( int ,
 			       double * ) ;
 
 
+SOFT_DECL
 extern void Inverse_SO3_Naive( int ,
 			       double * ,
 			       double * ,

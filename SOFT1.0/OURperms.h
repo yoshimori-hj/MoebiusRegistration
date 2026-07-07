@@ -36,7 +36,6 @@
   ************************************************************************
   ************************************************************************/
 
-
 /*
   function to interface with the OUR permutation arrays
   for FCTs defined in OURperms.c
@@ -45,6 +44,9 @@
 #ifndef _OURPERMS_H
 #define _OURPERMS_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern const int *get_perm( int ) ;
 
 #endif /* _OURPERMS_H */

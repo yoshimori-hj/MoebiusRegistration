@@ -38,8 +38,6 @@
   ************************************************************************
   ************************************************************************/
 
-
-
 /**
    
    header file for functions that are all concerned with the construction of
@@ -76,33 +74,44 @@
 #ifndef _MAKEWIGNER_H
 #define _MAKEWIGNER_H 1
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern double L2_aN_so3( int ,
 		     int ,
 		     int ) ;
 
+SOFT_DECL
 extern double L2_bN_so3( int ,
 		     int ,
 		     int ) ;
 
+SOFT_DECL
 extern double L2_cN_so3( int ,
 		     int ,
 		     int ) ;
 
+SOFT_DECL
 extern void EvalPtsW( int ,
 		      double * ) ;
 
+SOFT_DECL
 extern void CosEvalPts( int ,
 			double * ) ;
 
+SOFT_DECL
 extern void SinEvalPts( int ,
 			double * ) ;
 
+SOFT_DECL
 extern void CosEvalPts2( int ,
 			 double * ) ;
 
+SOFT_DECL
 extern void SinEvalPts2( int ,
 			 double * ) ;
 
+SOFT_DECL
 extern void wigSpec_L2( int ,
 			int ,
 			double * ,
@@ -110,6 +119,7 @@ extern void wigSpec_L2( int ,
 			int ,
 			double * ) ;
 
+SOFT_DECL
 extern void genWig_L2( int ,
 		       int ,
 		       int ,
@@ -120,6 +130,7 @@ extern void genWig_L2( int ,
 		       double * ,
 		       double * ) ;
 
+SOFT_DECL
 extern void genWigTrans_L2( int ,
 			    int ,
 			    int ,
@@ -130,10 +141,12 @@ extern void genWigTrans_L2( int ,
 			    double * ,
 			    double * ) ;
 
+SOFT_DECL
 extern void genWigAll( int ,
 		       double * ,
 		       double * ) ;
 
+SOFT_DECL
 extern void genWigAllTrans( int ,
 			    double * ,
 			    double * ) ;

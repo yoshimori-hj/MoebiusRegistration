@@ -43,14 +43,19 @@
 #ifndef _FSTSEMI_MEMO_H
 #define _FSTSEMI_MEMO_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern int seanindex( int ,
 		      int ,
 		      int );
 
+SOFT_DECL
 extern void TransMult( double *, double *,
 		       double *, double *,
 		       double *, double *,
 		       int );
+SOFT_DECL
 extern void FST_semi_memo( double *, double *,
 			   double *, double *,
 			   int , double **,
@@ -58,6 +63,7 @@ extern void FST_semi_memo( double *, double *,
 			   int ,
 			   int );
 
+SOFT_DECL
 extern void InvFST_semi_memo(double *, double *, 
 			     double *, double *,
 			     int , 
@@ -66,6 +72,7 @@ extern void InvFST_semi_memo(double *, double *,
 			     int ,
 			     int );
 
+SOFT_DECL
 extern void FZT_semi_memo( double *, double *,
 			   double *, double *,
 			   int ,
@@ -73,6 +80,7 @@ extern void FZT_semi_memo( double *, double *,
 			   double *,
 			   int );
 
+SOFT_DECL
 extern void Conv2Sphere_semi_memo( double *, double *,
 				   double *, double *,
 				   double *, double *,

@@ -39,6 +39,9 @@
 #ifndef _CSECOND_H
 #define _CSECOND_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern double csecond( void );
 
 #endif /* _CSECOND_H */

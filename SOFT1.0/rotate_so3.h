@@ -46,17 +46,19 @@
 
 */
 
-
 #ifndef _ROTATESO3_H
 #define _ROTATESO3_H 1
 
-/* #include "complex.h" */ /* needed to define REAL */
+#include "complex.h" /* needed to define REAL */
+#include "soft_module.h"
 
+SOFT_DECL
 extern void genExp( int ,
 		    REAL ,
 		    REAL * ,
 		    REAL * ) ;
 
+SOFT_DECL
 extern void wignerdmat( int ,
 			REAL * ,
 			REAL * ,
@@ -64,6 +66,7 @@ extern void wignerdmat( int ,
 			REAL * ,
 			REAL * ) ;
 
+SOFT_DECL
 extern void rotateCoefDegree( int ,
 			      REAL * , REAL * ,
 			      REAL * , REAL * ,
@@ -72,6 +75,7 @@ extern void rotateCoefDegree( int ,
 			      int ,
 			      REAL * ) ;
 
+SOFT_DECL
 extern void rotateCoefAll( int ,
 			   int ,
 			   int ,
@@ -82,6 +86,7 @@ extern void rotateCoefAll( int ,
 			   REAL * , REAL * ,
 			   REAL * ) ;
 
+SOFT_DECL
 extern void rotateFct( int , int , int ,
 		       REAL * , REAL * ,
 		       REAL * , REAL * ,

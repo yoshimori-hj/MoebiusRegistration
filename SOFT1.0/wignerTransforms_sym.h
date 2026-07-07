@@ -53,6 +53,9 @@
 #ifndef _WIGNERTRANSFORMS_SYM_H
 #define _WIGNERTRANSFORMS_SYM_H 1
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void wigNaiveAnalysis_symX( int ,
 				   int ,
 				   int ,
@@ -61,6 +64,7 @@ extern void wigNaiveAnalysis_symX( int ,
 				   double * ,
 				   double *  ) ;
 
+SOFT_DECL
 extern void wigNaiveAnalysis_symY( int ,
 				   int ,
 				   int ,
@@ -69,6 +73,7 @@ extern void wigNaiveAnalysis_symY( int ,
 				   double * ,
 				   double *  ) ;
 
+SOFT_DECL
 extern void wigNaiveSynthesis_symX( int ,
 				    int ,
 				    int ,
@@ -77,6 +82,7 @@ extern void wigNaiveSynthesis_symX( int ,
 				    double * ,
 				    double *  ) ;
 
+SOFT_DECL
 extern void wigNaiveSynthesis_symY( int ,
 				    int ,
 				    int ,

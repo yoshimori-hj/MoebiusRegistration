@@ -36,84 +36,105 @@
   ************************************************************************
   ************************************************************************/
 
-
 #ifndef _COSPMLS_H
 #define _COSPMLS_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern int Power2Ceiling( int ) ;
 
+SOFT_DECL
 extern int TableSize( int ,
 		      int ) ;
 
+SOFT_DECL
 extern int Spharmonic_TableSize( int ) ;
 
+SOFT_DECL
 extern int Reduced_SpharmonicTableSize( int ,
 					int ) ;
 
+SOFT_DECL
 extern int Reduced_Naive_TableSize( int ,
 				    int ) ;
 
+SOFT_DECL
 extern int NewTableOffset( int ,
 			   int ) ;
 
+SOFT_DECL
 extern int TableOffset( int ,
 			int ) ;
 
+SOFT_DECL
 extern void CosPmlTableGen( int ,
 			    int ,
 			    double * ,
 			    double * ) ;
 
+SOFT_DECL
 extern void CosPmlTableGenLim( int , 
 			       int ,
 			       int ,
 			       double * ,
 			       double * ) ;
 
+SOFT_DECL
 extern int RowSize( int ,
 		    int ) ;
 
+SOFT_DECL
 extern int Transpose_RowSize( int ,
 			      int ,
 			      int ) ;
 
+SOFT_DECL
 extern void Transpose_CosPmlTableGen( int ,
 				      int ,
 				      double * ,
 				      double * ) ;
 
+SOFT_DECL
 extern double **Spharmonic_Pml_Table( int ,
 				      double * ,
 				      double * ) ;
+SOFT_DECL
 extern float **Spharmonic_Pml_Table( int ,
 				      float * ,
 				      float * ) ;
 
+SOFT_DECL
 extern double **Reduced_Spharmonic_Pml_Table( int ,
 					      int ,
 					      double * ,
 					      double * ) ;
 
+SOFT_DECL
 extern double **Transpose_Spharmonic_Pml_Table( double ** ,
 						int ,
 						double * ,
 						double * ) ;
+SOFT_DECL
 extern float **Transpose_Spharmonic_Pml_Table( float ** ,
 						int ,
 						float * ,
 						float * ) ;
 
+SOFT_DECL
 extern double **Reduced_Transpose_Spharmonic_Pml_Table( double ** ,
 							int ,
 							int ,
 							double * ,
 							double * ) ;
 
+SOFT_DECL
 extern double **SemiNaive_Naive_Pml_Table( int ,
 					   int ,
 					   double * ,
 					   double * ) ;
 
+SOFT_DECL
 extern double **Transpose_SemiNaive_Naive_Pml_Table( double ** , 
 						     int ,
 						     int ,

@@ -43,14 +43,26 @@
 #ifndef _FSTSEMI_MEMO_FFTW_H
 #define _FSTSEMI_MEMO_FFTW_H
 
+#include "soft_module.h"
+
+#include <fftw3.h>
+
 // Strictly real transforms (Misha Added)
+SOFT_DECL
 extern void FST_semi_memo_fftw		(double *, double *, double *, int, double **, double *);
+SOFT_DECL
 extern void FST_semi_memo_fftw		(double *, fftw_complex *, int, double **, double *);
+SOFT_DECL
 extern void FST_semi_memo_fftw		(float *, float *, float *, int, float **, float *);
+SOFT_DECL
 extern void FST_semi_memo_fftw		(float *, fftwf_complex *, int, float **, float *);
+SOFT_DECL
 extern void InvFST_semi_memo_fftw	(double *, double *, double *, int, double **, double *);
+SOFT_DECL
 extern void InvFST_semi_memo_fftw	(fftw_complex *, double *, int, double **, double *);
+SOFT_DECL
 extern void InvFST_semi_memo_fftw	(float *, float *, float *, int, float **, float *);
+SOFT_DECL
 extern void InvFST_semi_memo_fftw	(fftwf_complex *, float *, int, float **, float *);
 // Done misha added
 #endif /* _FSTSEMI_MEMO_FFTW_H */

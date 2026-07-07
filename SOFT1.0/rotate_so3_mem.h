@@ -50,12 +50,15 @@
 #define _ROTATESO3_MEM_H 1
 
 #include "complex.h"  /* needed to define REAL */
+#include "soft_module.h"
 
+SOFT_DECL
 extern void genExp_mem( int ,
 			REAL ,
 			REAL * ,
 			REAL * ) ;
 
+SOFT_DECL
 extern void wignerdmat_mem( int ,
 			    REAL * ,
 			    REAL * ,
@@ -63,6 +66,7 @@ extern void wignerdmat_mem( int ,
 			    REAL * ,
 			    REAL * ) ;
 
+SOFT_DECL
 extern void rotateCoefDegree_mem( int ,
 				  REAL * , REAL * ,
 				  REAL * , REAL * ,
@@ -71,6 +75,7 @@ extern void rotateCoefDegree_mem( int ,
 				  int ,
 				  REAL * ) ;
 
+SOFT_DECL
 extern void rotateCoefAll_mem( int ,
 			       int ,
 			       REAL ,
@@ -79,6 +84,7 @@ extern void rotateCoefAll_mem( int ,
 			       REAL * , REAL * ,
 			       REAL * ) ;
 
+SOFT_DECL
 extern void rotateFct_mem( int , int ,
 			   REAL * , REAL * ,
 			   REAL , REAL , REAL ,

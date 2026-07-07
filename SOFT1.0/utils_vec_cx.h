@@ -55,21 +55,30 @@
 #ifndef _UTILS_VEC_CX_H
 #define _UTILS_VEC_CX_H 1
 
+#include "complex.h"
+#include "soft_module.h"
+
+#include <fftw3.h>
+
+SOFT_DECL
 extern void vec_add_cx( fftw_complex * ,
 			fftw_complex * ,
 			fftw_complex * ,
 			int ) ;
 
+SOFT_DECL
 extern void vec_mul_cx( REAL ,
 			fftw_complex * ,
 			fftw_complex * ,
 			int ) ;
 
+SOFT_DECL
 extern void vec_pt_mul_cx( REAL * ,
 			   fftw_complex * ,
 			   fftw_complex * ,
 			   int ) ;
 
+SOFT_DECL
 extern void transpose_cx(  fftw_complex * ,
 			   fftw_complex * ,
 			   int ,

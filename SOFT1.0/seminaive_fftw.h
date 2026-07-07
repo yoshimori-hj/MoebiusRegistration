@@ -40,6 +40,9 @@
 #ifndef _SEMINAIVE_FFTW_H
 #define _SEMINAIVE_FFTW_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void SemiNaiveReduced_fftw( double * ,
 			      int , 
 			      int , 
@@ -47,6 +50,7 @@ extern void SemiNaiveReduced_fftw( double * ,
 			      double * ,
 			      double * ,
 			      double * ) ;
+SOFT_DECL
 extern void SemiNaiveReduced_fftw( float * ,
 			      int , 
 			      int , 
@@ -55,6 +59,7 @@ extern void SemiNaiveReduced_fftw( float * ,
 			      float * ,
 			      float * ) ;
 
+SOFT_DECL
 extern void InvSemiNaiveReduced_fftw( double * ,
 				 int , 
 				 int , 
@@ -62,6 +67,7 @@ extern void InvSemiNaiveReduced_fftw( double * ,
 				 double * ,
 				 double * ,
 				 double * ) ;
+SOFT_DECL
 extern void InvSemiNaiveReduced_fftw( float * ,
 				 int , 
 				 int , 

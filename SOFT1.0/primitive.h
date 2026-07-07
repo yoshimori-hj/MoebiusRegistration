@@ -36,68 +36,86 @@
   ************************************************************************
   ************************************************************************/
 
-
 #ifndef _PRIMITIVE_H
 #define _PRIMITIVE_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern double L2_an( int ,
 		     int ) ;
 
+SOFT_DECL
 extern double L2_cn( int ,
 		     int ) ;
 
+SOFT_DECL
 extern double L2_cn_inv( int ,
 			 int ) ;
 
+SOFT_DECL
 extern double L2_ancn( int ,
 		       int ) ;
 
+SOFT_DECL
 extern void vec_add( double * ,
 		     double * ,
 		     double * ,
 		     int ) ;
+SOFT_DECL
 extern void vec_add( float * ,
 		     float * ,
 		     float * ,
 		     int ) ;
 
+SOFT_DECL
 extern void vec_mul( double ,
 		     double * ,
 		     double * ,
 		     int ) ;
+SOFT_DECL
 extern void vec_mul( float ,
 		     float * ,
 		     float * ,
 		     int ) ;
 
+SOFT_DECL
 extern void vec_pt_mul( double * ,
 			double * ,
 			double * ,
 			int ) ;
+SOFT_DECL
 extern void vec_pt_mul( float * ,
 			float * ,
 			float * ,
 			int ) ;
 
+SOFT_DECL
 extern void ArcCosEvalPts( int ,
 			   double * ) ;
+SOFT_DECL
 extern void ArcCosEvalPts( int ,
 			   float * ) ;
 
+SOFT_DECL
 extern void EvalPts( int ,
 		     double * ) ;
+SOFT_DECL
 extern void EvalPts( int ,
 		     float * ) ;
 
+SOFT_DECL
 extern void Pmm_L2( int ,
 		    double * ,
 		    int ,
 		    double * ) ;
+SOFT_DECL
 extern void Pmm_L2( int ,
 		    float * ,
 		    int ,
 		    float * ) ;
 
+SOFT_DECL
 extern void P_eval( int ,
 		    double * ,
 		    double * ,

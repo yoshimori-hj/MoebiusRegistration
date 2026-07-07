@@ -36,7 +36,6 @@
   ************************************************************************
   ************************************************************************/
 
-
 /***
 
   Interface function for supermoduli arrays for FCTs
@@ -46,6 +45,9 @@
 #ifndef _OURMODS_H
 #define _OURMODS_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern const double *get_mods( int ) ;
 
 #endif /* _OURMODS_H */

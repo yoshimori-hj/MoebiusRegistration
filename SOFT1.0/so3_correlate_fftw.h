@@ -48,11 +48,15 @@
 
 */
 
-#include "fftw3.h"
-
 #ifndef _SO3_CORRELATE_FFTW_H
 #define _SO3_CORRELATE_FFTW_H 1
 
+#include "soft_module.h"
+#include "complex.h"
+
+#include <fftw3.h>
+
+SOFT_DECL
 extern void so3CombineCoef_fftw( int ,
 				 int ,
 				 int ,

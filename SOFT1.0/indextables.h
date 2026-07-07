@@ -37,12 +37,14 @@
   ************************************************************************
   ************************************************************************/
 
-
 /* indextables.h - externally available structures and procedures */
 
 #ifndef _INDEXTABLES_H
 #define _INDEXTABLES_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void bitreverse( double * ,
 			int ,
 			double * ) ;

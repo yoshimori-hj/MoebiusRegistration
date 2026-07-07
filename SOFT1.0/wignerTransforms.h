@@ -54,6 +54,9 @@
 #ifndef _WIGNERTRANSFORMS_H
 #define _WIGNERTRANSFORMS_H 1
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void wigNaiveAnalysis( int ,
 			      int ,
 			      int ,
@@ -62,6 +65,7 @@ extern void wigNaiveAnalysis( int ,
 			      double * ,
 			      double *  ) ;
 
+SOFT_DECL
 extern void wigNaiveSynthesis( int ,
 			       int ,
 			       int ,

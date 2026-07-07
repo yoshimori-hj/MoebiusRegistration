@@ -36,10 +36,12 @@
   ************************************************************************
   ************************************************************************/
 
-
 #ifndef _SEMINAIVE_H
 #define _SEMINAIVE_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void SemiNaive( double *,
 		       int , 
 		       int , 
@@ -51,6 +53,7 @@ extern void SemiNaive( double *,
 		       int , 
 		       double * ) ;
 
+SOFT_DECL
 extern void SemiNaiveX( double *,
 			int , 
 			int , 
@@ -61,6 +64,7 @@ extern void SemiNaiveX( double *,
 			int ,
 			double * ,
 			int ) ;
+SOFT_DECL
 extern void SemiNaiveReduced( double * ,
 			      int , 
 			      int , 
@@ -68,6 +72,7 @@ extern void SemiNaiveReduced( double * ,
 			      double * ,
 			      double * ,
 			      double * ) ;
+SOFT_DECL
 extern void SemiNaiveReduced( float * ,
 			      int , 
 			      int , 
@@ -76,6 +81,7 @@ extern void SemiNaiveReduced( float * ,
 			      float * ,
 			      float * ) ;
 
+SOFT_DECL
 extern void SemiNaiveReducedX( double * ,
 			       int , 
 			       int ,
@@ -84,6 +90,7 @@ extern void SemiNaiveReducedX( double * ,
 			       double * ,
 			       double * ) ;
 
+SOFT_DECL
 extern void InvSemiNaiveReduced( double * ,
 				 int , 
 				 int , 
@@ -91,6 +98,7 @@ extern void InvSemiNaiveReduced( double * ,
 				 double * ,
 				 double * ,
 				 double * ) ;
+SOFT_DECL
 extern void InvSemiNaiveReduced( float * ,
 				 int , 
 				 int , 

@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.20)
 
 project(MoebiusRegistration VERSION 2.52 LANGUAGES CXX)
 
+option(BUILD_SHARED_LIBS "Whether build shared libs" OFF)
+
 option(WITH_SYSTEM_EIGEN3
        "Use system installed Eigen3" ON)
 
-# MoebiusRegistration does not support shared library and CMake
 find_package(PkgConfig REQUIRED)
 find_package(OpenMP REQUIRED)
 pkg_check_modules(FFTW3 REQUIRED fftw3 fftw3f)
@@ -30,7 +31,7 @@ endif()
 set(SOFTDIR "${BASEDIR}/SOFT1.0")
 
 add_library(
-  SOFT STATIC
+  SOFT
   ${SOFTDIR}/FFTcode.cpp
   ${SOFTDIR}/FST_semi_memo.cpp
   ${SOFTDIR}/FST_semi_memo_fftw.cpp
@@ -65,6 +66,12 @@ add_library(
   ${SOFTDIR}/wignerTransforms.cpp
   ${SOFTDIR}/wignerTransforms_fftw.cpp
   ${SOFTDIR}/wignerTransforms_sym.cpp)
+
+get_target_property(SOFT_TYPE SOFT TYPE)
+if(SOFT_TYPE STREQUAL "SHARED_LIBRARY")
+  list(APPEND SOFT_INTERNAL_DEFS "SOFT_EXPORT")
+  list(APPEND SOFT_INTERFACE_DEFS "SOFT_IMPORT")
+endif()
 
 set_target_properties(SOFT PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED
                                                       FALSE)

@@ -36,19 +36,23 @@
   ************************************************************************
   ************************************************************************/
 
-
 #ifndef _PRIMITIVEFST_H
 #define _PRIMITIVEFST_H
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern int seanindex( int,
 		      int,
 		      int );
 
+SOFT_DECL
 extern void seanindex2( int ,
 			int ,
 			int ,
 			int *);
 
+SOFT_DECL
 extern void transpose( double *,
 		       int );
 

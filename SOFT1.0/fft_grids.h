@@ -39,7 +39,9 @@
 #ifndef _FFT_GRIDS_H
 #define _FFT_GRIDS_H
 
+#include "soft_module.h"
 
+SOFT_DECL
 extern void grid_fourier( double * ,
 			  double * ,
 			  double * ,
@@ -47,6 +49,7 @@ extern void grid_fourier( double * ,
 			  int ,
 			  double * );
 
+SOFT_DECL
 extern void grid_invfourier( double * ,
 			     double * ,
 			     double * ,

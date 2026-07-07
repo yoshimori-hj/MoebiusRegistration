@@ -84,6 +84,7 @@
 #ifndef _UTILS_SO3_H
 #define _UTILS_SO3_H 1
 
+#include "soft_module.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -106,47 +107,58 @@
 #define HMM(M, K, BW) ((BW) - MAX((-M), (-K)))
 
 
+SOFT_DECL
 extern void vec_add_so3( double * ,
 			 double * ,
 			 double * ,
 			 int ) ;
 
+SOFT_DECL
 extern void vec_mul_so3( double ,
 			 double * ,
 			 double * ,
 			 int ) ;
 
+SOFT_DECL
 extern void vec_pt_mul_so3( double * ,
 			    double * ,
 			    double * ,
 			    int ) ;
 
+SOFT_DECL
 extern double vec_inner_so3( double * ,
 			     double * ,
 			     int ) ;
 
+SOFT_DECL
 extern void transpose_so3( double * ,
 			   double * ,
 			   int ,
 			   int ) ;
 
+SOFT_DECL
 extern int totalCoeffs_so3( int ) ;
 
+SOFT_DECL
 extern int numCoeffs_so3( int ,
 			  int ) ;
 
+SOFT_DECL
 extern int howMany_so3( int ,
 			int ,
 			int ) ;
+SOFT_DECL
 extern int sampLoc_so3( int ,
 			int ,
 			int ) ;
 
+SOFT_DECL
 extern int coefLoc_so3( int ,
 			int ,
 			int ) ;
 
 
+SOFT_DECL
 extern int so3CoefLoc( int ,
 		       int ,
 		       int ,

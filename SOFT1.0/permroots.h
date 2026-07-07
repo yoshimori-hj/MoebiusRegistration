@@ -37,7 +37,6 @@
   ************************************************************************
   ************************************************************************/
 
-
 /* permroots.h - externally available structures and procedures */
 /* These is a table of the roots of unity in bit-reversed order.
    These are used by the FFT evaluation and interpolation routines */
@@ -50,6 +49,8 @@
 
 #ifndef _PERMROOTS_H
 #define _PERMROOTS_H
+
+#include "soft_module.h"
 
 #define USE_CPP 1
 #if USE_CPP
@@ -2785,6 +2786,7 @@ const double r4096[8192] =
   -0.999998823451702, 0.001533980186285049, 0.999998823451702, 
   -0.001533980186284765};
 #else
+SOFT_DECL
 extern const double r4096[8192];
 #endif // USE_CPP
 

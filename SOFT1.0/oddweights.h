@@ -36,13 +36,14 @@
   ************************************************************************
   ************************************************************************/
 
-
-
 #ifndef _ODDWEIGHTS_H
 #define _ODDWEIGHTS_H
 
 /* external definitions for weight arrays */
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern const double *get_oddweights( int );
 
 #endif /* _ODDWEIGHTS_H */

@@ -39,6 +39,10 @@
 #ifndef _FFTCODE_H
 
 #define _FFTCODE_H
+
+#include "soft_module.h"
+
+SOFT_DECL
 extern void FFTEval(double * , double * ,
 		    double * , double * ,
 		    int ,
@@ -47,6 +51,7 @@ extern void FFTEval(double * , double * ,
 		    int ) ;
 
 
+SOFT_DECL
 extern void FFTInterp( double * , double * ,
 		       double * , double * ,
 		       int ,

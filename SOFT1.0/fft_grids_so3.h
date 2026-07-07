@@ -41,6 +41,9 @@
 #ifndef _FFT_GRIDS_SO3_H
 #define _FFT_GRIDS_SO3_H 1
 
+#include "soft_module.h"
+
+SOFT_DECL
 extern void grid_fourier_so3( double * ,
 			      double * ,
 			      double * ,
@@ -49,6 +52,7 @@ extern void grid_fourier_so3( double * ,
 			      int ,
 			      double * );
 
+SOFT_DECL
 extern void grid_invfourier_so3( double * ,
 				 double * ,
 				 double * ,

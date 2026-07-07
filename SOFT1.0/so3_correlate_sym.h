@@ -51,6 +51,10 @@
 #ifndef _SO3_CORRELATE_SYM_H
 #define _SO3_CORRELATE_SYM_H 1
 
+#include "complex.h"
+#include "soft_module.h"
+
+SOFT_DECL
 extern void so3CombineCoef( int ,
 			    int ,
 			    int ,
