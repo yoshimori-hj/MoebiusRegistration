@@ -91,18 +91,18 @@ target_include_directories(
 set(MISHA_INCDIR "${BASEDIR}/Include")
 add_library(Misha INTERFACE)
 target_include_directories(Misha INTERFACE "$<BUILD_INTERFACE:${MISHA_INCDIR}>")
-target_link_libraries(Misha INTERFACE ${EIGEN} ${OPENMP_TARGET})
+target_link_libraries(Misha INTERFACE SOFT ${EIGEN} ${OPENMP_TARGET})
 
 # Tools
 set(REGISTER_DIR "${BASEDIR}/Register")
 add_executable(moebius-register ${REGISTER_DIR}/Register.cpp)
-target_link_libraries(moebius-register SOFT Misha)
+target_link_libraries(moebius-register Misha)
 
 set(PARAMETRIZATION_DIR "${BASEDIR}/Parametrization")
 add_executable(moebius-parametrization
                ${PARAMETRIZATION_DIR}/Parametrization.cpp)
-target_link_libraries(moebius-parametrization SOFT Misha)
+target_link_libraries(moebius-parametrization Misha)
 
 set(SPHERE_MAP_DIR "${BASEDIR}/SphereMap")
 add_executable(moebius-sphere-map ${SPHERE_MAP_DIR}/SphereMap.cpp)
-target_link_libraries(moebius-sphere-map SOFT Misha)
+target_link_libraries(moebius-sphere-map Misha)
