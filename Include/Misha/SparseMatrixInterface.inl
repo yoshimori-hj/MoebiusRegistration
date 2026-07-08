@@ -107,7 +107,9 @@ template< class T2 >
 void SparseMatrixInterface< T , const_iterator >::MultiplyParallel( ConstPointer( T2 ) In , Pointer( T2 ) Out , int threads , int multiplyFlag ) const
 {
 	ConstPointer( T2 ) in = In;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int i=0 ; i<(int)Rows() ; i++ )
 	{
 #if 1
@@ -209,7 +211,9 @@ int SparseMatrixInterface< T , const_iterator >::SolveConjugateGradient( const V
         T2 dDotQ = 0 , alpha = 0;
 		for( int i=0 ; i<d.size() ; i++ ) dDotQ += Dot( d[i] , q[i] );
 		alpha = delta_new / dDotQ;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 		for( int i=0 ; i<r.size() ; i++ )
 			x[i] += d[i] * alpha;
 		if( !(ii%50) )
@@ -219,7 +223,9 @@ int SparseMatrixInterface< T , const_iterator >::SolveConjugateGradient( const V
 		}
 		else
 		{
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 			for( int i=0 ; i<r.size() ; i++ )
 				r[i] = r[i] - Dot( q[i] , alpha );
 		}
@@ -228,7 +234,9 @@ int SparseMatrixInterface< T , const_iterator >::SolveConjugateGradient( const V
 		delta_new = 0;
 		for( int i=0 ; i<r.size() ; i++ ) delta_new += SquareNorm( r[i] );
 		beta = delta_new / delta_old;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 		for( int i=0 ; i<d.size() ; i++ )
 			d[i] = r[i] + d[i] * beta;
 	}
@@ -349,7 +357,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyParallel(
 	startEntry.resize( entriesPerSlice.size() );
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerSlice.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerSlice[i-1];
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		int startSlice = 0 , endSlice;
@@ -385,7 +395,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyParallel(
 	startEntry.resize( entriesPerLine.size() );
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerLine.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerLine[i-1];
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		int startSlice = 0 , endSlice;
@@ -423,7 +435,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyTransposeParallel(
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerSlice.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerSlice[i-1];
 
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		int startSlice = 0 , endSlice;
@@ -475,7 +489,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyTransposeParallel(
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerLine.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerLine[i-1];
 
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		int startSlice = 0 , endSlice;
@@ -528,7 +544,9 @@ void SparseMatrixInterface< T , const_iterator >::BMinusMXParallel(
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerSlice.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerSlice[i-1];
 
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		int startSlice = 0 , endSlice;
@@ -616,7 +634,9 @@ ParallelSolution< T2 >::~ParallelSolution( void )
 template< class T2 >
 void ParallelSolution< T2 >::SetFromArray( ConstPointer( T2 ) solution )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first];
@@ -629,7 +649,9 @@ void ParallelSolution< T2 >::SetFromArray( ConstPointer( T2 ) solution )
 template< class T2 >
 void ParallelSolution< T2 >::SetToArray( Pointer( T2 ) solution ) const
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first];
@@ -642,7 +664,9 @@ void ParallelSolution< T2 >::SetToArray( Pointer( T2 ) solution ) const
 template< class T2 >
 void ParallelSolution< T2 >::clear( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first];
@@ -655,7 +679,9 @@ void ParallelSolution< T2 >::clear( void )
 template< class T2 >
 void ParallelSolution< T2 >::_clearSkirts( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first];
@@ -670,7 +696,9 @@ void ParallelSolution< T2 >::_clearSkirts( void )
 template< class T2 >
 void ParallelSolution< T2 >::_merge( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads-1 )
+#endif
 	for( int t=0 ; t<_threads-1 ; t++ )
 	{
 		int skirtEntryStart1 = _startEntry[_skirtBounds[t].first];
@@ -702,7 +730,9 @@ void ParallelSolution< T2 >::_merge( void )
 template< class T2 >
 void ParallelSolution< T2 >::synchronize( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads-1 )
+#endif
 	for( int t=0 ; t<_threads-1 ; t++ )
 	{
 		int skirtEntryStart1 = _startEntry[_skirtBounds[t].first];
@@ -727,7 +757,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyParallel( ConstPointer
 	const int sliceCount = out->_sliceCount;
 	const int* startEntry = &out->_startEntry[0];
 	const int* entriesPerSlice = out->_entriesPerSlice;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -764,7 +796,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyParallel( const Parall
 	const int sliceCount = out->_sliceCount;
 	const int* startEntry = &out->_startEntry[0];
 	const int* entriesPerSlice = out->_entriesPerSlice;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -805,7 +839,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyTransposeParallel( con
 	const int* entriesPerSlice = in->_entriesPerSlice;
 
 	out->_clearSkirts( );
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -845,7 +881,9 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelParallel(	Cons
 	const int sliceCount = Solution->_sliceCount;
 	const int* startEntry = &Solution->_startEntry[0];
 	const int* entriesPerSlice = Solution->_entriesPerSlice;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -917,7 +955,9 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelAndResidualPar
 	const int sliceCount = Solution->_sliceCount;
 	const int* startEntry = &Solution->_startEntry[0];
 	const int* entriesPerSlice = Solution->_entriesPerSlice;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1075,7 +1115,9 @@ ParallelSolution2< T2 >::~ParallelSolution2( void )
 template< class T2 >
 void ParallelSolution2< T2 >::SetFromArray( ConstPointer( T2 ) solution )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first*_linesPerSlice];
@@ -1088,7 +1130,9 @@ void ParallelSolution2< T2 >::SetFromArray( ConstPointer( T2 ) solution )
 template< class T2 >
 void ParallelSolution2< T2 >::SetToArray( Pointer( T2 ) solution ) const
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first*_linesPerSlice];
@@ -1101,7 +1145,9 @@ void ParallelSolution2< T2 >::SetToArray( Pointer( T2 ) solution ) const
 template< class T2 >
 void ParallelSolution2< T2 >::clear( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first*_linesPerSlice];
@@ -1114,7 +1160,9 @@ void ParallelSolution2< T2 >::clear( void )
 template< class T2 >
 void ParallelSolution2< T2 >::_clearSkirts( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads )
+#endif
 	for( int t=0 ; t<_threads ; t++ )
 	{
 		int skirtEntryStart = _startEntry[_skirtBounds[t].first*_linesPerSlice];
@@ -1129,7 +1177,9 @@ void ParallelSolution2< T2 >::_clearSkirts( void )
 template< class T2 >
 void ParallelSolution2< T2 >::_merge( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads-1 )
+#endif
 	for( int t=0 ; t<_threads-1 ; t++ )
 	{
 		int skirtEntryStart1 = _startEntry[_skirtBounds[t].first*_linesPerSlice];
@@ -1163,7 +1213,9 @@ void ParallelSolution2< T2 >::_merge( void )
 template< class T2 >
 void ParallelSolution2< T2 >::synchronize( void )
 {
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( _threads-1 )
+#endif
 	for( int t=0 ; t<_threads-1 ; t++ )
 	{
 		int skirtEntryStart1 = _startEntry[_skirtBounds[t  ].first *_linesPerSlice  ];
@@ -1189,7 +1241,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyParallel( ConstPointer
 	const int* startEntry = &out->_startEntry[0];
 	const int* entriesPerLine = out->_entriesPerLine;
 	int linesPerSlice = out->_linesPerSlice;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1229,7 +1283,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyParallel( const Parall
 	const int* startEntry = &out->_startEntry[0];
 	const int* entriesPerLine = out->_linesPerSlice;
 	int linesPerSlice = out->_linesPerSlice;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1286,7 +1342,9 @@ void SparseMatrixInterface< T , const_iterator >::MultiplyTransposeParallel( con
 	int linesPerSlice = in->_linesPerSlice;
 
 	out->_clearSkirts( );
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1343,7 +1401,9 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelParallel(	Cons
 	const int* entriesPerLine =  Solution->_entriesPerLine;
 	const int linesPerSlice   =  Solution->_linesPerSlice;
 	const int delta = (linesPerSlice+1)*sliceDependence;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1434,7 +1494,9 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelAndResidualPar
 	const int* entriesPerLine =  Solution->_entriesPerLine;
 	const int linesPerSlice   =  Solution->_linesPerSlice;
 	const int delta = (linesPerSlice+1)*sliceDependence;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1538,7 +1600,9 @@ void SparseMatrixInterface< T , const_iterator >::ResidualParallel( ConstPointer
 	const int* entriesPerLine =  Solution->_entriesPerLine;
 	const int linesPerSlice   =  Solution->_linesPerSlice;
 	const int delta = (linesPerSlice+1)*sliceDependence;
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int t=0 ; t<threads ; t++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1622,7 +1686,9 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelParallel(
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerSlice.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerSlice[i-1];
 
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.
@@ -1703,7 +1769,9 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelAndResidualPar
 	startEntry[0] = 0;
 	for( int i=1 ; i<entriesPerSlice.size() ; i++ ) startEntry[i] = startEntry[i-1] + entriesPerSlice[i-1];
 
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int s=0 ; s<threads ; s++ )
 	{
 		// Compute the starting and ending slices associated with the current thread.

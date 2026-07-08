@@ -1,7 +1,9 @@
 #ifndef SPHERICAL_HARMONICS_INCLUDED
 #define SPHERICAL_HARMONICS_INCLUDED
 #include <vector>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "Misha/Geometry.h"
 
 namespace HomogeneousPolynomials

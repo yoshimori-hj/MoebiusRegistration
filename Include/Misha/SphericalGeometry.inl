@@ -54,7 +54,9 @@ SquareMatrix< Real , 3 > SphericalGeometry::Correlate( SphericalGrid< Real >& so
 	hForm.ForwardFourier( target, targetKey );
 
 	if( gradientDomain )
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<sourceKey.bandWidth() ; i++ )
 		{
 			Real scl = (Real)sqrt( i*(i+1) );
@@ -65,7 +67,9 @@ SquareMatrix< Real , 3 > SphericalGeometry::Correlate( SphericalGrid< Real >& so
 	if( !keySO3.resize( source.resolution() ) ) fprintf( stderr , "[ERROR] Correlate: Could not allocate key: %d\n" , source.resolution() ) , exit( 0 ); 
 
 	// Compute the aligning rotation
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<keySO3.bandWidth(); i++ ) for( int j=0 ; j<=i ; j++ ) for( int k=0 ; k<=i ; k++ ) 
 	{
 		// set each Wigner-D coefficient to be the cross multiplication 
@@ -248,7 +252,9 @@ SphericalGeometry::Mesh< Real >::Mesh( const std::vector< Point3D< Real > >& ver
 	this->vertices = sVertices;
 	this->polygons = polygons;
 	masses.resize( polygons.size() );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<polygons.size() ; i++ ) masses[i] = Area( vertices , polygons[i] );
 }
 template< class Real >
@@ -276,7 +282,9 @@ void SphericalGeometry::Mesh< Real >::read( const char* fileName , std::vector< 
 	vertices.resize( _vertices.size() );
 	for( int i=0 ; i<vertices.size() ; i++ ) this->vertices[i] = Point3D< Real >( _vertices[i].param ) , vertices[i] = Point3D< Real >( _vertices[i].point );
 	masses.resize( polygons.size() );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<polygons.size() ; i++ ) masses[i] = Area( vertices , polygons[i] );
 }
 template< class Real >
@@ -292,7 +300,9 @@ bool SphericalGeometry::Mesh< Real >::read( const char* fileName , std::vector< 
 	this->vertices.resize( _vertices.size() ) , vertices.resize( _vertices.size() ) , colors.resize( _vertices.size() );
 	for( int i=0 ; i<_vertices.size() ; i++ ) this->vertices[i] = Point3D< Real >( _vertices[i].param ) , vertices[i] = Point3D< Real >( _vertices[i].point ) , colors[i] = Point3D< Real >( _vertices[i].color );
 	masses.resize( polygons.size() );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<polygons.size() ; i++ ) masses[i] = Area( vertices , polygons[i] );
 	return hasColor;
 }
@@ -350,12 +360,23 @@ Point3D< Real > SphericalGeometry::Mesh< Real >::center( F f ) const
 template< class Real > template< unsigned int SHDegree >
 Point< Real , SphericalHarmonics::Dimension< SHDegree >() > SphericalGeometry::Mesh< Real >::centerSH( void ) const
 {
+#ifdef _OPENMP
+	const int max_threads = omp_get_max_threads();
+#else
+	const int max_threads = 1;
+#endif
 	static_assert( SHDegree<=SphericalHarmonics::MaxDegree , "[ERROR] Degree exceeds maximum spherical harmonic degree" );
-	std::vector< Point< double , SphericalHarmonics::Dimension< SHDegree >() > > projections( omp_get_max_threads() );
+	std::vector< Point< double , SphericalHarmonics::Dimension< SHDegree >() > > projections( max_threads );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int t=0 ; t<masses.size() ; t++ )
 	{
+#ifdef _OPENMP
 		int thread = omp_get_thread_num();
+#else
+		int thread = 0;
+#endif
 		double _p[ SphericalHarmonics::Dimension< SHDegree >() ];
 		SphericalHarmonics::HarmonicValues< SHDegree >( Point3D< double >( center(t) ) , _p );
 		for( unsigned int i=0 ; i<SphericalHarmonics::Dimension< SHDegree >() ; i++ ) projections[thread][i] += _p[i] * masses[t];
@@ -367,12 +388,23 @@ Point< Real , SphericalHarmonics::Dimension< SHDegree >() > SphericalGeometry::M
 template< class Real > template< unsigned int SHDegree >
 SquareMatrix< Real , SphericalHarmonics::Dimension< SHDegree >() > SphericalGeometry::Mesh< Real >::dCenterSH( void ) const
 {
+#ifdef _OPENMP
+	const int max_threads = omp_get_max_threads();
+#else
+	const int max_threads = 1;
+#endif
 	static_assert( SHDegree<=SphericalHarmonics::MaxDegree , "[ERROR] Degree exceeds maximum spherical harmonic degree" );
-	std::vector< SquareMatrix< double , SphericalHarmonics::Dimension< SHDegree >() > > dProjections( omp_get_max_threads() );
+	std::vector< SquareMatrix< double , SphericalHarmonics::Dimension< SHDegree >() > > dProjections( max_threads );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int t=0 ; t<masses.size() ; t++ )
 	{
+#ifdef _OPENMP
 		int thread = omp_get_thread_num();
+#else
+		int thread = 0;
+#endif
 		Point3D< double > _p[ SphericalHarmonics::Dimension< SHDegree >() ];
 		SphericalHarmonics::HarmonicGradients< SHDegree >( Point3D< double >( center(t) ) , _p );
 		for( unsigned int i=0 ; i<SphericalHarmonics::Dimension< SHDegree >() ; i++ ) for( unsigned int j=0 ; j<=i ; j++ ) dProjections[thread](i,j) += Point3D< Real >::Dot( _p[i] , _p[j] ) * masses[t];
@@ -385,7 +417,9 @@ SquareMatrix< Real , SphericalHarmonics::Dimension< SHDegree >() > SphericalGeom
 template< class Real > template< typename VF >
 void SphericalGeometry::Mesh< Real >::advect( VF vf , int steps )
 {
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<vertices.size() ; i++ )
 	{
 		Point3D< Real >& v = vertices[i];
@@ -436,7 +470,9 @@ SquareMatrix< Real , 3 > SphericalGeometry::Mesh< Real >::dCenter( F f ) const
 template< class Real > template< typename F >
 SphericalGeometry::Mesh< Real >& SphericalGeometry::Mesh< Real >::operator *= ( F f )
 {
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<vertices.size() ; i++ ) vertices[i] = f( vertices[i] );
 	return *this;
 }
@@ -501,7 +537,9 @@ int SphericalGeometry::Mesh< Real >::normalize( int iters , double cutOff , bool
 		}
 		else c = - D * c * 2;
 		SphericalInversion< Real > inv = c2i( *this , c );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<vertices.size() ; i++ ) vertices[i] = inv( vertices[i] );
 	}
 	if( verbose )
@@ -767,9 +805,13 @@ void SphericalGeometry::Tessellation< Real >::_init( const SphericalGeometry::Me
 	_resolution = resolution;
 	_vertices = mesh.vertices;
 	_polygons.resize( mesh.polygons.size() );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<mesh.polygons.size() ; i++ ) _polygons[i] = Polygon< Real >( i , mesh.masses[i] , mesh.polygons[i] );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<_vertices.size() ; i++ ) _vertices[i] /= (Real)Length( _vertices[i] );
 
 	std::vector< typename SphericalGeometry::Polygon< Real >::PlanarSources > pSources( _vertices.size() );
@@ -835,7 +877,9 @@ void SphericalGeometry::Tessellation< Real >::_collapseCells( std::vector< Verte
 		v1 = (int)((key>>32)    );
 		v2 = (int)((key<<32)>>32);
 	};
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<polygons.size() ; i++ )
 	{
 		Real mass = 0;
@@ -882,7 +926,9 @@ void SphericalGeometry::Tessellation< Real >::_collapseCells( std::vector< Verte
 				}
 				if( !found ) fprintf( stderr , "[ERROR] Couldn't find next edge\n" ) , exit( 0 );
 			}
+#ifdef _OPENMP
 #pragma omp critical
+#endif
 			{
 				_polygons.push_back( p );
 			}
@@ -1126,7 +1172,9 @@ template< class Real >
 Point3D< Real > SphericalGeometry::CircumscribedSphere< Real >::Center( const std::vector< Point3D< Real > >& vertices , int iters )
 {
 	Real w=0 , x=0 , y=0 , z=0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : w , x , y , z )
+#endif
 	for( int i=0 ; i<iters ; i++ )
 	{
 		Point3D< Real > c;

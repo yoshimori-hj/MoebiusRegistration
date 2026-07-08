@@ -28,7 +28,9 @@ DAMAGE.
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include <map>
 #include <unordered_map>
 #include <Eigen/Dense>
@@ -55,10 +57,20 @@ enum
 	HOLE_FILL_TYPE_POLYGON ,
 	HOLE_FILL_TYPE_COUNT
 };
+
+static const int num_procs()
+{
+#ifdef _OPENMP
+  return omp_get_num_procs();
+#else
+  return 1;
+#endif
+}
+
 const char *MeshTypeNames[] = { "triangle mesh" , "polygon mesh" , "implicitly triangulated polygon mesh" };
 const char* HoleFillTypeNames[] = { "none" , "center triangulation" , "minimal area triangulation" , "polygon" };
 cmdLineParameter< char* > In( "in" ) , Out( "out" ) , OutGrid( "outG" ) , OutTessellation( "outT" );
-cmdLineParameter< int > Iterations( "iters" , 100 ) , Threads( "threads" , omp_get_num_procs() ) , Resolution( "res" , 256 ) , SHDegree( "degree" , 1 ) , AdvectionSteps( "aSteps" , 10 ) , MeshType( "mesh" , MESH_TYPE_TRIANGLE+1 ) , HoleFillType( "fill" , HOLE_FILL_TYPE_NONE ) , CenterToInversion( "c2i" , 2 );
+cmdLineParameter< int > Iterations( "iters" , 100 ) , Threads( "threads" , num_procs() ) , Resolution( "res" , 256 ) , SHDegree( "degree" , 1 ) , AdvectionSteps( "aSteps" , 10 ) , MeshType( "mesh" , MESH_TYPE_TRIANGLE+1 ) , HoleFillType( "fill" , HOLE_FILL_TYPE_NONE ) , CenterToInversion( "c2i" , 2 );
 cmdLineParameter< float > StepSize( "stepSize" , 0.1f ) , CutOff( "cutOff" , 1e-10f ) , Smooth( "smooth" , 5e-4f ) , AdvectionStepSize( "aStepSize" , 0.05f ) , GSSTolerance( "gssTolerance" , (float)1e-6 ) , PoincareMaxNorm( "poincareMaxNorm" , 2.f );
 cmdLineReadable Verbose( "verbose" ) , FullVerbose( "fullVerbose" ) , ASCII( "ascii" ) , Randomize( "random" ) , NoCenter( "noCenter" ) , Collapse( "collapse" ) , NoOrient( "noOrient" ) , NoGridScale( "noGridScale" ) , Lump( "lump" ) , Spherical( "spherical" );
 
@@ -159,14 +171,18 @@ struct Mesh
 	Real area( void ) const
 	{
 		Real a=0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : a )
+#endif
 		for( int f=0 ; f<faces() ; f++ ) a += area( f );
 		return a;
 	}
 	Point3D< Real > center( void ) const
 	{
 		Real area=0 , x=0 , y=0 , z=0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : area , x , y , z )
+#endif
 		for( int f=0 ; f<faces() ; f++ )
 		{
 			Real a = this->area(f);
@@ -178,7 +194,9 @@ struct Mesh
 	Real makeUnitArea( void )
 	{
 		Real scl = (Real)( 1./sqrt( area() ) );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<vertices.size() ; i++ ) vertices[i] *= scl;
 		return (Real)1./scl;
 	}
@@ -202,7 +220,9 @@ struct Mesh
 	{
 		Real area = 0;
 		std::vector< Real > vertexAreas = this->vertexAreas();
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : area )
+#endif
 		for( int i=0 ; i<vertexAreas.size() ; i++ ) area += vertexAreas[i];
 		Point3D< Real > center;
 		for( int i=0 ; i<vertices.size() ; i++ ) center += vertices[i] * vertexAreas[i];
@@ -215,7 +235,9 @@ struct Mesh
 		//     = \sum_i[ w_i * v_i^2 ] + v^2 - 2 * v^2
 		//     = \sum_i[ w_i * v_i^2 ] - v^2
 		Real average = 0 , var = 0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : average , var )
+#endif
 		for( int i=0 ; i<vertices.size() ; i++ )
 		{
 			Real r = (Real)sqrt( Point3D< Real >::SquareNorm( Point3D< Real >( vertices[i]-center ) ) );
@@ -260,17 +282,30 @@ struct TriangleMesh : public Mesh< Real >
 		};
 		SparseMatrix< Real , int > M;
 		M.resize( (int)vertices.size() );
-		std::vector< std::vector< Entry > > entries( omp_get_max_threads() );
+#ifdef _OPENMP
+		const int max_threads = omp_get_max_threads();
+#else
+		const int max_threads = 1;
+#endif
+		std::vector< std::vector< Entry > > entries( max_threads );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int t=0 ; t<triangles.size() ; t++ )
 		{
+#ifdef _OPENMP
 			int thread = omp_get_thread_num();
+#else
+			int thread = 0;
+#endif
 			Point3D< Real > v[] = { vertices[ triangles[t][0] ] , vertices[ triangles[t][1] ] , vertices[ triangles[t][2] ] };
 			SquareMatrix< Real , 3 > m = F( v );
 			for( int i=0 ; i<3 ; i++ ) for( int j=0 ; j<3 ; j++ ) entries[thread].push_back( Entry( triangles[t][i] , triangles[t][j] , m(i,j) ) );
 		}
 		for( int i=0 ; i<entries.size() ; i++ ) for( int j=0 ; j<entries[i].size() ; j++ )	M.rowSizes[ entries[i][j].row ]++;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<M.rows ; i++ )
 		{
 			int rowSize = M.rowSizes[i];
@@ -279,7 +314,9 @@ struct TriangleMesh : public Mesh< Real >
 			M.rowSizes[i] = 0;
 		}
 		for( int i=0 ; i<entries.size() ; i++ ) for( int j=0 ; j<entries[i].size() ; j++ ) M[ entries[i][j].row ][ M.rowSizes[entries[i][j].row]++ ] = MatrixEntry< Real , int >( entries[i][j].col , entries[i][j].value );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<M.rows ; i++ )
 		{
 			std::unordered_map< int , Real > row;
@@ -368,7 +405,9 @@ public:
 		SparseMatrix< Real , int > mass;
 		mass.resize( (int)vertices.size() );
 		Eigen::DiagonalMatrix< double , Eigen::Dynamic > M0 = mass0();
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<mass.rows ; i++ )
 		{
 			mass.SetRowSize( i , 1 );
@@ -438,9 +477,13 @@ public:
 	{
 		Eigen::DiagonalMatrix< double , Eigen::Dynamic > M0( vertices.size() );
 		std::vector< double > areas( polygons.size() );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<polygons.size() ; i++ ) areas[i] = area( i ) / polygons[i].size();
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<vertices.size() ; i++ ) M0.diagonal()(i) = 0;
 		for( int i=0 ; i<polygons.size() ; i++ ) for( int j=0 ; j<polygons[i].size() ; j++ ) M0.diagonal()( polygons[i][j] ) += areas[i];
 		return M0;
@@ -611,7 +654,9 @@ struct TriangulatedPolygonMesh : public Mesh< Real >
 		SparseMatrix< Real , int > mass = matrix( MassMatrix );
 		if( lump )
 		{
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for( int i=0 ; i<mass.rows ; i++ )
 			{
 				Real sum = 0;
@@ -639,17 +684,30 @@ struct TriangulatedPolygonMesh : public Mesh< Real >
 		};
 		SparseMatrix< Real , int > M;
 		M.resize( (int)vertices.size() );
-		std::vector< std::vector< Entry > > entries( omp_get_max_threads() );
+#ifdef _OPENMP
+		const int max_threads = omp_get_max_threads();
+#else
+		const int max_threads = 1;
+#endif
+		std::vector< std::vector< Entry > > entries( max_threads );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int p=0 ; p<polygons.size() ; p++ )
 		{
+#ifdef _OPENMP
 			int thread = omp_get_thread_num();
+#else
+			int thread = 0;
+#endif
 			int pSize = (int)polygons[p].size();
 			Eigen::MatrixXd m = faceMatrix( p , F );
 			for( int i=0 ; i<pSize ; i++ ) for( int j=0 ; j<pSize ; j++ ) entries[thread].push_back( Entry( polygons[p][i] , polygons[p][j] , m(i,j) ) );
 		}
 		for( int i=0 ; i<entries.size() ; i++ ) for( int j=0 ; j<entries[i].size() ; j++ )	M.rowSizes[ entries[i][j].row ]++;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<M.rows ; i++ )
 		{
 			int rowSize = M.rowSizes[i];
@@ -658,7 +716,9 @@ struct TriangulatedPolygonMesh : public Mesh< Real >
 			M.rowSizes[i] = 0;
 		}
 		for( int i=0 ; i<entries.size() ; i++ ) for( int j=0 ; j<entries[i].size() ; j++ ) M[ entries[i][j].row ][ M.rowSizes[entries[i][j].row]++ ] = MatrixEntry< Real , int >( entries[i][j].col , entries[i][j].value );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<M.rows ; i++ )
 		{
 			std::unordered_map< int , Real > row;
@@ -750,7 +810,9 @@ struct QuasiConformalRatio
 	Real operator()( const std::vector< Point3D< Real > > &vertices ) const
 	{
 		Real error = 0 , area = 0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : error , area )
+#endif
 		for( int i=0 ; i<triangles.size() ; i++ )
 		{
 			Point3D< Real > v[] = { vertices[ triangles[i][0] ] , vertices[ triangles[i][1] ] , vertices[ triangles[i][2] ] };
@@ -789,7 +851,9 @@ protected:
 		areas.resize( triangles.size() , 0 );
 
 		Real area = 0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction( + : area )
+#endif
 		for( int i=0 ; i<triangles.size() ; i++ )
 		{
 			Point3D< Real > v[] = { vertices[ triangles[i][0] ] , vertices[ triangles[i][1] ] , vertices[ triangles[i][2] ] };
@@ -798,7 +862,9 @@ protected:
 			if( areas[i]<=ConformalCutOff ) continue;
 			massInvs[i] = _MassMatrix( v ).inverse();
 		}
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<areas.size() ; i++ ) areas[i] /= area;
 
 	}
@@ -889,7 +955,9 @@ void CMCF( Mesh &mesh , int iters , bool lump , int fCount )
 	auto SetStats = [&]( Real &deformationScale , Real &quasiConformalRatio , Real &radialDeviation )
 	{
 		Real differenceNorm=0 , oldNorm=0;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int j=0 ; j<D.rows ; j++ )
 		{
 			differenceNorm += Point3D< Real >::Dot( oldX[j]-vertices[j] , oldX[j]-vertices[j] ) * D[j][0].Value;
@@ -911,7 +979,9 @@ void CMCF( Mesh &mesh , int iters , bool lump , int fCount )
 		// Set the new constraint vector: b = D * x
 		D.MultiplyParallel( &vertices[0] , &b[0] , Threads.value , MULTIPLY_CLEAR );
 		// Set the system matrix: M = D + t * L
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( Threads.value )
+#endif
 		for( int j=0 ; j<M.rows ; j++ )
 		{
 			for( int k=0 ; k<M.rowSizes[j] ; k++ ) M[j][k].Value  = L[j][k].Value * stepSize;
@@ -929,10 +999,14 @@ void CMCF( Mesh &mesh , int iters , bool lump , int fCount )
 		// Solve for each of the x, y, z coefficients independently
 		for( int d=0 ; d<3 ; d++ )
 		{
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( Threads.value )
+#endif
 			for( int j=0 ; j<b.size() ; j++ ) _b[j] = b[j][d] , _x[j] = oldX[j][d] = vertices[j][d];
 			solver->solve( &_b[0] , &_x[0] );
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( Threads.value )
+#endif
 			for( int j=0 ; j<vertices.size() ; j++ ) vertices[j][d] = _x[j];
 		}
 		double sTime2 = Timer::Time()-t;
@@ -1171,9 +1245,13 @@ void Execute( Mesh &mesh , const std::vector< Point3D< Real > > &colors )
 	// Normalize the parameterization
 	{
 		Point3D< Real > center = mesh.center();
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<mesh.vertices.size() ; i++ ) mesh.vertices[i] -= center;
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<mesh.vertices.size() ; i++ ) mesh.vertices[i] /= Length( mesh.vertices[i] );
 	}
 
@@ -1181,7 +1259,9 @@ void Execute( Mesh &mesh , const std::vector< Point3D< Real > > &colors )
 	if( !NoOrient.set )
 	{
 		Real pArea = 0 , nArea = 0;
+#ifdef _OPENMP
 #pragma omp parallel for reduction ( + : pArea , nArea )
+#endif
 		for( int f=0 ; f<mesh.faces() ; f++ )
 		{
 			Point3D< Real > c = mesh.center(f);
@@ -1191,7 +1271,9 @@ void Execute( Mesh &mesh , const std::vector< Point3D< Real > > &colors )
 			else                                  nArea += l;
 		}
 		if( nArea>pArea )
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for( int i=0 ; i<mesh.vertices.size() ; i++ ) mesh.vertices[i] = - mesh.vertices[i];
 	}
 	Execute( mesh , vertices , colors );
@@ -1241,7 +1323,9 @@ int main( int argc , char* argv[] )
 				Point3D< Real > n = tpMesh.normal(p);
 				for( int j=0 ; j<tpMesh.polygons[p].size() ; j++ ) colors[ tpMesh.polygons[p][j] ] += n;
 			}
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for( int i=0 ; i<colors.size() ; i++ ) colors[i] = NormalColor( -colors[i]/(Real)Length( colors[i] ) );
 		}
 		Execute( tpMesh , colors );
@@ -1258,7 +1342,9 @@ int main( int argc , char* argv[] )
 				Point3D< Real > n = pMesh.normal(p);
 				for( int j=0 ; j<pMesh.polygons[p].size() ; j++ ) colors[ pMesh.polygons[p][j] ] += n;
 			}
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for( int i=0 ; i<colors.size() ; i++ ) colors[i] = NormalColor( -colors[i]/(Real)Length( colors[i] ) );
 		}
 		Execute( pMesh , colors );
@@ -1274,7 +1360,9 @@ int main( int argc , char* argv[] )
 				Point3D< Real > n = tMesh.normal(t);
 				for( int j=0 ; j<3 ; j++ ) colors[ tMesh.triangles[t][j] ] += n;
 			}
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for( int i=0 ; i<colors.size() ; i++ ) colors[i] = NormalColor( -colors[i]/(Real)Length( colors[i] ) );
 		}
 		Execute( tMesh , colors );

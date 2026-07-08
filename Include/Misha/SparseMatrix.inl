@@ -360,7 +360,9 @@ bool TransposeMultiply( const SparseMatrix< T1 , IndexType >& At , const SparseM
 		}
 
 	out.resize( aRows );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 	for( int i=0 ; i<rows.size() ; i++ )
 	{
 		out.SetRowSize( i , rows[i].size() );
@@ -384,7 +386,9 @@ bool Multiply( const SparseMatrixInterface< A_T , A_const_iterator >& A , const 
 	}
 
 	out.resize( aRows );
+#ifdef _OPENMP
 #pragma omp parallel for num_threads( threads )
+#endif
 	for( int i=0 ; i<aRows ; i++ )
 	{
 		std::unordered_map< Out_IndexType , Out_T > row;

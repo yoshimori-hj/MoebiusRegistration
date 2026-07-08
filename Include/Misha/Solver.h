@@ -29,7 +29,9 @@ DAMAGE.
 #define SOLVER_H
 
 #include <Eigen/Sparse>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "SparseMatrix.h"
 #include "Vector.h"
 
@@ -111,7 +113,9 @@ public:
 	}
 	void update( const SparseMatrix< Real , int >& M )
 	{
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<(int)M.Rows() ; i++ ) for( int j=0 ; j<(int)M.RowSize(i) ; j++ ) _eigenM.coeffRef( i , M[i][j].N ) = M[i][j].Value;
 		_solver.factorize( _eigenM );
 		switch( _solver.info() )
@@ -125,10 +129,14 @@ public:
 	}
 	void solve( const Real* b , Real* x )
 	{
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<_eigenB.size() ; i++ ) _eigenB[i] = b[i];
 		Eigen_Vector eigenX = _solver.solve( _eigenB );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<eigenX.size() ; i++ ) x[i] = (Real)eigenX[i];
 	}
 	size_t dimension( void ) const { return _eigenB.size(); }
@@ -169,10 +177,14 @@ public:
 	}
 	void solve( const Real* b , Real* x )
 	{
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<_eigenB.size() ; i++ ) _eigenB[i] = b[i];
 		Eigen_Vector eigenX = _solver.solve( _eigenB );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<eigenX.size() ; i++ ) x[i] = (Real)eigenX[i];
 	}
 	size_t dimension( void ) const { return _eigenB.size(); }

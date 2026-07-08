@@ -28,7 +28,9 @@ DAMAGE.
 
 #include <cstdlib>
 #include <vector>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #include "Misha/Geometry.h"
 #include "Misha/Algebra.h"
@@ -173,7 +175,9 @@ void Execute( void )
 		_sourceGrid.read( In.values[0] ) , _targetGrid.read( In.values[1] );
 		if( _sourceGrid.resolution()!=_targetGrid.resolution() ) fprintf( stderr , "[ERROR] Source and target grid resolutions don't match: %d != %d\n" , _sourceGrid.resolution() , _targetGrid.resolution() ) , exit( 0 );
 		sourceGrid.resize( _sourceGrid.resolution() ) , targetGrid.resize( _targetGrid.resolution() );
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int j=0 ; j<sourceGrid.resolution() ; j++ ) for( int i=0 ; i<sourceGrid.resolution() ; i++ ) sourceGrid(i,j) = (Real)_sourceGrid(i,j) , targetGrid(i,j) = (Real)_targetGrid(i,j);
 	}
 	// If the inputs are both parameterized meshes
@@ -243,7 +247,9 @@ void Execute( void )
 		default:
 			fprintf( stderr , "[ERROR] Invalid correlation type: %d\n" , CorrelationType.value ) , exit( 0 );
 		}
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 		for( int i=0 ; i<sourceMesh.vertices.size() ; i++ ) sourceMesh.vertices[i] = R * sourceMesh.vertices[i];
 		if( Verbose.set )  printf( "Correlated %.2f(s)\t Error: %g\n" , t.elapsed() , error );
 		else printf( "Error: %g\n" , error );
@@ -255,7 +261,9 @@ void Execute( void )
 		if( Correspondence.set )
 		{
 			// Re-map the source vertex positions
+#ifdef _OPENMP
 #pragma omp parallel for
+#endif
 			for( int i=0 ; i<sourceMesh.vertices.size() ; i++ )
 			{
 				Real theta , phi; 

@@ -4,13 +4,18 @@ project(MoebiusRegistration VERSION 2.52 LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Whether build shared libs" OFF)
 
-option(WITH_SYSTEM_EIGEN3
-       "Use system installed Eigen3" ON)
-
 find_package(PkgConfig REQUIRED)
-find_package(OpenMP REQUIRED)
 pkg_check_modules(FFTW3 REQUIRED fftw3 fftw3f)
 
+option(ENABLE_OPENMP "Enable OpenMP" OFF)
+if(ENABLE_OPENMP)
+  find_package(OpenMP REQUIRED)
+  set(OPENMP_TARGET "OpenMP::OpenMP_CXX")
+else()
+  unset(OPENMP_TARGET)
+endif()
+
+option(WITH_SYSTEM_EIGEN3 "Use system installed Eigen3" ON)
 if(WITH_SYSTEM_EIGEN3)
   find_package(Eigen3 REQUIRED)
 endif()
@@ -86,12 +91,12 @@ target_include_directories(
 set(MISHA_INCDIR "${BASEDIR}/Include")
 add_library(Misha INTERFACE)
 target_include_directories(Misha INTERFACE "$<BUILD_INTERFACE:${MISHA_INCDIR}>")
-target_link_libraries(Misha INTERFACE ${EIGEN})
+target_link_libraries(Misha INTERFACE ${EIGEN} ${OPENMP_TARGET})
 
 # Tools
 set(REGISTER_DIR "${BASEDIR}/Register")
 add_executable(moebius-register ${REGISTER_DIR}/Register.cpp)
-target_link_libraries(moebius-register SOFT Misha OpenMP::OpenMP_CXX)
+target_link_libraries(moebius-register SOFT Misha)
 
 set(PARAMETRIZATION_DIR "${BASEDIR}/Parametrization")
 add_executable(moebius-parametrization
@@ -100,4 +105,4 @@ target_link_libraries(moebius-parametrization SOFT Misha)
 
 set(SPHERE_MAP_DIR "${BASEDIR}/SphereMap")
 add_executable(moebius-sphere-map ${SPHERE_MAP_DIR}/SphereMap.cpp)
-target_link_libraries(moebius-sphere-map SOFT Misha OpenMP::OpenMP_CXX)
+target_link_libraries(moebius-sphere-map SOFT Misha)
