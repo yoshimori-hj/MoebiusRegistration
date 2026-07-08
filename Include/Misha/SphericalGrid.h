@@ -29,6 +29,8 @@ DAMAGE.
 #ifndef SPHERICAL_GRID_INCLUDED
 #define SPHERICAL_GRID_INCLUDED
 
+#include <cstdio>
+
 #ifndef PI
 #define PI 3.1415926535897932384
 #endif 

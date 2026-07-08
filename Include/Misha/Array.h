@@ -30,6 +30,9 @@ DAMAGE.
 #define ARRAY_INCLUDED
 
 #include <vector>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 
 #ifdef _WIN64
 #define ASSERT( x ) { if( !( x ) ) __debugbreak(); }
