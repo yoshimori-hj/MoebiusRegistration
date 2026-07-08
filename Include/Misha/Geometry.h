@@ -29,6 +29,7 @@ DAMAGE.
 #define GEOMETRY_INCLUDED
 #include <cstring>
 #include <complex>
+#include <vector>
 #include <unordered_map>
 #include <initializer_list>
 #include "Algebra.h"
