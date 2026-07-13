@@ -74,8 +74,8 @@ add_library(
 
 get_target_property(SOFT_TYPE SOFT TYPE)
 if(SOFT_TYPE STREQUAL "SHARED_LIBRARY")
-  list(APPEND SOFT_INTERNAL_DEFS "SOFT_EXPORT")
-  list(APPEND SOFT_INTERFACE_DEFS "SOFT_IMPORT")
+  target_compile_definitions(SOFT PRIVATE SOFT_EXPORT)
+  target_compile_definitions(SOFT INTERFACE SOFT_IMPORT)
 endif()
 
 set_target_properties(SOFT PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED
