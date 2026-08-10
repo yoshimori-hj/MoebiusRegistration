@@ -35,6 +35,8 @@ DAMAGE.
 #include "fftw3.h"
 #include <math.h>
 
+namespace Misha
+{
 //////////////////
 // FourierKeyS2 //
 //////////////////
@@ -208,3 +210,4 @@ int HarmonicTransform<Real>::InverseFourier(FourierKeyS2<Real>&,SphericalGrid<Re
 	fprintf(stderr,"Harmonic Transform only supported for floats and doubles\n");
 	return 0;
 }
+} // namespace Misha

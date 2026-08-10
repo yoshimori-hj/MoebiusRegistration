@@ -35,7 +35,8 @@ DAMAGE.
 #include "Array.h"
 #include <vector>
 
-
+namespace Misha
+{
 #if FORCE_TWO_BYTE_ALIGNMENT
 #pragma pack(push)
 #pragma pack(2)
@@ -366,7 +367,7 @@ public:
 		const std::vector< int >& entriesPerSlice , const std::vector< int >& slicesPerThread , int sliceDependence , bool unitDiagonal , bool strippedDiagonal
 		) const { SolveGaussSeidelAndResidualParallel< T2 , T3 , UseSOR >( Diagonal+0 , b+0 , iters , Solution+0 , Residual+0 , sor , entriesPerSlice , slicesPerThread , sliceDependence , unitDiagonal , strippedDiagonal ); }
 };
-
+} // namespace Misha
 #include "SparseMatrixInterface.inl"
 
 #endif // SPARSE_MATRIX_INTERFACE_INCLUDED

@@ -31,8 +31,10 @@ DAMAGE.
 
 #ifndef PI
 #define PI 3.1415926535897932384
-#endif 
+#endif
 
+namespace Misha
+{
 
 // This templated class represents a function on the group of rotations, where index (i,j,k) corresponds
 // to the rotation with Euler coefficients:
@@ -97,6 +99,7 @@ public:
 	// Returns the dot-product of two arrays
 	static Real Dot(const RotationGrid& g1,const RotationGrid& g2);
 };
+} // namespace Misha
 #include "RotationGrid.inl"
 #endif // ROTATION_GRID_INCLUDED
 

@@ -33,7 +33,10 @@ DAMAGE.
 
 #ifndef PI
 #define PI 3.1415926535897932384
-#endif 
+#endif
+
+namespace Misha
+{
 
 // This templated class represents a spherical function, where index (i,j) corresponds to the
 // point on the sphere with spherical coordinates:
@@ -102,6 +105,7 @@ public:
 	// Rotates a spherical grid
 	static void Rotate(const SphericalGrid& in,const Real rotation[3][3],SphericalGrid& out);
 };
+} // namespace Misha
 #include "SphericalGrid.inl"
 #endif // SPHERICAL_GRID_INCLUDED
 

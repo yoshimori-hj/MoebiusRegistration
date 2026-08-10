@@ -29,6 +29,7 @@ DAMAGE.
 #ifndef COMPLEX_INCLUDED
 #define COMPLEX_INCLUDED
 
+namespace Misha {
 // This templated class represents a complex number, supporting the standard
 // arithmetic operations
 template<class Real=float>
@@ -63,5 +64,6 @@ public:
 	Complex conjugate(void) const;
 	Real squareNorm(void) const;
 };
+} // namespace Misha
 #include "Complex.inl"
 #endif // COMPLEX_INCLUDED

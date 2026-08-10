@@ -33,6 +33,8 @@ DAMAGE.
 #include <float.h>
 #include "SphericalGrid.h"
 
+namespace Misha
+{
 template< class Real > RotationGrid< Real >::RotationGrid( void ) : res(0) , values(NULL) { ; }
 template< class Real > RotationGrid< Real >::RotationGrid( int resolution ) : res(0) , values(NULL) { resize( resolution ); }
 template< class Real > RotationGrid< Real >::~RotationGrid( void ) { if( values ) resize(0); }
@@ -271,3 +273,4 @@ Real RotationGrid<Real>::Dot(const RotationGrid& g1,const RotationGrid& g2){
 	}
 	return Real(d*4.0/3.0*PI);
 }
+} // namespace Misha

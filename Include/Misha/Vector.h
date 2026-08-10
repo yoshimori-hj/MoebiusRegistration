@@ -31,6 +31,9 @@ DAMAGE.
 
 #include "Array.h"
 
+namespace Misha
+{
+
 template<class T>
 class Vector
 {
@@ -174,6 +177,7 @@ protected:
 
 };
 
+} // namespace Misha
 
 #include "Vector.inl"
 

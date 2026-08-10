@@ -6,6 +6,8 @@
 #endif
 #include "Misha/Geometry.h"
 
+namespace Misha
+{
 namespace HomogeneousPolynomials
 {
 	template< unsigned int Degree > constexpr unsigned int Dimension( void ){ return ( (Degree+2)*(Degree+1) ) / 2;}
@@ -255,5 +257,6 @@ namespace SphericalHarmonics
 		return g;
 	}
 }
+} // namespace Misha
 
 #endif // SPHERICAL_HARMONICS_INCLUDED

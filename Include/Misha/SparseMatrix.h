@@ -33,6 +33,8 @@ DAMAGE.
 #include "SparseMatrixInterface.h"
 #include "Array.h"
 
+namespace Misha
+{
 template <class T>
 struct MatrixEntry2
 {
@@ -143,6 +145,7 @@ template <class Matrix,class IPS,class Real>
 static int SolveConjugateGradient(const Matrix& SPD,const Vector<IPS>& b,const int& iters,Vector<IPS>& solution,const double eps=1e-8);
 template <class Matrix,class IPS,class Real>
 static int SolveConjugateGradient2(const Matrix& SPD,const Vector<IPS>& b,const int& iters,Vector<IPS>& solution,const double eps=1e-8);
+} // namespace Misha
 #include "SparseMatrix.inl"
 
 #endif /* __SPARSEMATRIX_HPP */

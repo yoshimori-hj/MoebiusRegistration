@@ -37,6 +37,8 @@ DAMAGE.
 #include "Misha/SphericalHarmonics.h"
 #include "Misha/Solver.h"
 
+namespace Misha
+{
 template< class Real > std::ostream& operator << ( std::ostream& os , const Point2D< Real > p ){ return os << "(" << p[0] << "," << p[1] << ")"; }
 template< class Real > std::ostream& operator << ( std::ostream& os , const Point3D< Real > p ){ return os << "(" << p[0] << "," << p[1] << "," << p[2] << ")"; }
 
@@ -248,6 +250,7 @@ namespace SphericalGeometry
 	protected:
 		static void _RandomCenter( const std::vector< Point3D< Real > >& vertices , Point3D< Real >& c , Real& a );
 	};
-}
+} // namespace SphericalGeometry
+} // namespace Misha
 #include "Misha/SphericalGeometry.inl"
 #endif // SPHERICAL_GEOMETRY_INCLUDED

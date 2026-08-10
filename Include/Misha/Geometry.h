@@ -37,6 +37,8 @@ DAMAGE.
 #define PAN_FIX 1
 #define FAST_POINT 1
 
+namespace Misha
+{
 template< class Real > Real Random( void );
 
 template< class Real , int Dim >
@@ -1089,5 +1091,6 @@ void SplitTriangle( std::vector< Point3D< Real > >& vertices , TriangleIndex tri
 template< class Real >
 void SplitTriangle( std::vector< Point3D< Real > >& vertices , TriangleIndex triangle , int direction , Real offset ,
 	std::vector< TriangleIndex >& backTriangles , std::vector< TriangleIndex >& frontTriangles );
+} // namespace Misha
 #include "Geometry.inl"
 #endif // GEOMETRY_INCLUDED

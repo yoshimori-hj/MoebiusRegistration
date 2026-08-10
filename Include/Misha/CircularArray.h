@@ -32,8 +32,10 @@ DAMAGE.
 
 #ifndef PI
 #define PI 3.1415926535897932384
-#endif 
+#endif
 
+namespace Misha
+{
 // This templated class represents a set of regular samples of a real-valued function on the unit-circle
 template<class Real=float>
 class CircularArray
@@ -78,5 +80,6 @@ public:
 	// Returns the dot-product of two arrays
 	static Real Dot(const CircularArray& g1,const CircularArray& g2);
 };
+} // namespace Misha
 #include "CircularArray.inl"
 #endif // CIRCULAR_ARRAY_INCLUDED

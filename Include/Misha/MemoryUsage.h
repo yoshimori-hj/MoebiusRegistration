@@ -34,6 +34,8 @@ DAMAGE.
 #include <Windows.h>
 #include <psapi.h>
 
+namespace Misha
+{
 class MemoryInfo
 {
 public:
@@ -112,6 +114,8 @@ public:
     static double peakMB;
 };
 double MemoryInfo::peakMB = 0;
+} // namespace Misha
+
 #else   // !WIN32
 
 #ifdef __APPLE__    // !__APPLE__
@@ -122,6 +126,8 @@ double MemoryInfo::peakMB = 0;
 #include <stdint.h>
 #include <unistd.h>
 
+namespace Misha
+{
 ////////////////////////////////////////////////////////////////////////////////
 /*! Class for retrieving memory utilization on Mac OS X.
 //  (Or probably any system using the MACH kernel.)
@@ -192,6 +198,7 @@ class MemoryInfo
         }
 };
 double MemoryInfo::peakMB = 0;
+}
 
 #else   // !__APPLE__
 
@@ -199,6 +206,8 @@ double MemoryInfo::peakMB = 0;
 #include <sys/resource.h>
 #include <unistd.h>
 
+namespace Misha
+{
 class MemoryInfo
 {
     public:
@@ -243,6 +252,7 @@ class MemoryInfo
         }
 };
 double MemoryInfo::peakMB = 0;
+}
 #endif // __APPLE__
 #endif // WIN32
 

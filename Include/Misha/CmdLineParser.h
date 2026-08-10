@@ -38,6 +38,8 @@ DAMAGE.
 int strcasecmp( char* c1 , char* c2 );
 #endif // WIN32
 
+namespace Misha
+{
 class cmdLineReadable
 {
 public:
@@ -100,6 +102,6 @@ char* DirectoryName( char* fileName );
 char* GetFileExtension( const char* fileName );
 char* GetLocalFileName( const char* fileName );
 char** ReadWords( const char* fileName , int& cnt );
-
+} // namespace Misha
 #include "CmdLineParser.inl"
 #endif // CMD_LINE_PARSER_INCLUDED

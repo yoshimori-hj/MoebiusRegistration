@@ -37,6 +37,8 @@
 #include <math.h>
 #include <string.h>
 
+namespace Misha
+{
 const char *type_names[] =
 {
 	"invalid",
@@ -2741,4 +2743,5 @@ Read an element from a binary file.
 	  
 	  return (ptr);
   }
-  
+
+}

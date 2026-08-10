@@ -31,8 +31,10 @@ DAMAGE.
 
 #ifndef PI
 #define PI 3.1415926535897932384
-#endif 
+#endif
 
+namespace Misha
+{
 // This class represents a set of regular samples of a real-valued, periodic, function in 2D
 template<class Real=float>
 class SquareGrid
@@ -78,5 +80,6 @@ public:
 	// Returns the dot-product of two arrays
 	static Real Dot(const SquareGrid& g1,const SquareGrid& g2);
 };
+} // namespace Misha
 #include "SquareGrid.inl"
 #endif // GRID_INCLUDED

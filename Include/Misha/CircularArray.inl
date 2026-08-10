@@ -30,6 +30,8 @@ DAMAGE.
 #include <stdio.h>
 #include <string.h>
 
+namespace Misha
+{
 
 template< class Real > CircularArray< Real >::CircularArray( void ) : res(0) , values(NULL) { ; }
 template< class Real > CircularArray< Real >::CircularArray( int resolution ) : res(0) , values(NULL) { resize( resolution ); }
@@ -139,3 +141,4 @@ Real CircularArray<Real>::Dot(const CircularArray& g1,const CircularArray& g2){
 	for(int i=0;i<g1.res;i++){d+=g1.values[i]*g2.values[i];}
 	return Real(d/g1.res*2.0*PI);
 }
+} // namespace Misha

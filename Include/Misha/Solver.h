@@ -35,7 +35,8 @@ DAMAGE.
 #include "SparseMatrix.h"
 #include "Vector.h"
 
-
+namespace Misha
+{
 // Code borrowed from: https://en.wikipedia.org/wiki/Golden_section_search
 template< class Real , class Functor >
 std::pair< Real , Real > GoldenSectionSearch( Functor& f , Real a , Real b , Real tolerance )
@@ -190,4 +191,5 @@ public:
 	size_t dimension( void ) const { return _eigenB.size(); }
 	static void Solve( const SparseMatrix< Real , int >& M , const Real* b , Real* x ){ EigenSolverCholeskyLDLt solver( M ) ; solver.solve( b , x ); }
 };
+} // namespace Misha
 #endif // SOLVER_H

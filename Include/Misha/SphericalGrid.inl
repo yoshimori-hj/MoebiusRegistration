@@ -32,6 +32,8 @@ DAMAGE.
 #include <math.h>
 #include <float.h>
 
+namespace Misha
+{
 template<class Real>
 Real ArcTan2(const Real& y,const Real& x){
 	/* This first case should never happen */
@@ -267,3 +269,4 @@ void SphericalGrid<Real>::Rotate(const SphericalGrid& in,const Real rotation[3][
 		}
 	}
 }
+} // namespace Misha

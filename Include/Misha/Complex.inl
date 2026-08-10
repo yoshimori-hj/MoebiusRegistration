@@ -26,6 +26,8 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+namespace Misha
+{
 template<class Real> Complex<Real>::Complex(const Real& r,const Real& i){this->r=r;this->i=i;}
 template<class Real> Complex<Real> Complex<Real>::operator - (void) const{
 	Complex<Real> c;
@@ -126,3 +128,4 @@ template<class Real> Complex<Real>& Complex<Real>::operator -= (const Complex<Re
 }
 template<class Real> Complex<Real>& Complex<Real>::operator *= (const Complex<Real>& c){return ((*this)=((*this)*c));}
 template<class Real> Complex<Real>& Complex<Real>::operator /= (const Complex<Real>& c){return ((*this)=((*this)/c));}
+} // namespace Misha

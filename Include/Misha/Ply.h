@@ -41,6 +41,7 @@
 #include "Geometry.h"
 #include "PlyFile.h"
 
+namespace Misha {
 template< class Real >
 class PlyVertex : public VectorSpace< Real , PlyVertex< Real > >
 {
@@ -1259,6 +1260,7 @@ int PlyWriteColorTriangles( const char* fileName ,
 
 template< class Vertex > int  MReadTriangles( const char* fileName ,       std::vector< Vertex >& vertices ,       std::vector< TriangleIndex >& triangles );
 template< class Vertex > int MWriteTriangles( const char* fileName , const std::vector< Vertex >& vertices , const std::vector< TriangleIndex >& triangles );
+}
 #include "Ply.inl"
 
 #endif // PLY_INCLUDED

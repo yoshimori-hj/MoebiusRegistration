@@ -29,6 +29,8 @@ DAMAGE.
 #ifndef ALGEBRA_INCLUDED
 #define ALGEBRA_INCLUDED
 
+namespace Misha
+{
 template<class Element>
 class Group
 {
@@ -271,4 +273,5 @@ public:
 		return e1;
 	}
 };
+}
 #endif // ALGEBRA_INCLUDED

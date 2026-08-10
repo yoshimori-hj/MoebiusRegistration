@@ -47,6 +47,9 @@ DAMAGE.
 #include "CircularArray.h"
 #include "Complex.h"
 
+namespace Misha
+{
+
 // This templated class represents the fourier coefficients of a real valued, 1D signal
 // Because the input signal generating the key is assumed to be real, we know that the
 // negative Fourier coefficients are just conjugates of their positive counterparts, and
@@ -349,7 +352,7 @@ public:
 	// on a sphere and returns the originial signal, writing it into "g"
 	int InverseFourier(FourierKeySO3<Real>& key,RotationGrid<Real>& g);
 };
-
+} // namespace Misha
 #include "Fourier1D.inl"
 #include "Fourier2D.inl"
 #include "FourierS2.inl"

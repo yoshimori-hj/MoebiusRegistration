@@ -32,6 +32,10 @@ DAMAGE.
 #if !defined( WIN32 ) && !defined( _WIN64 )
 #include <sys/time.h>
 #endif // !WIN32 && !_WIN64
+
+namespace Misha
+{
+
 #if defined( WIN32 ) || defined( _WIN64 )
 struct Timer
 {
@@ -71,4 +75,5 @@ struct Timer
 	}
 };
 #endif // WIN32 || WIN64
+} // namespace Misha
 #endif // TIMER_INCLUDED

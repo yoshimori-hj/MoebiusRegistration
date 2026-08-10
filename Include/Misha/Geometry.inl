@@ -37,6 +37,7 @@ DAMAGE.
 #include <float.h>
 #include <unordered_map>
 
+namespace Misha {
 inline long long HalfEdgeKey( int i1 , int i2 )
 {
 	return ( ( (long long) i1 )<<32 ) | ( (long long) i2 );
@@ -1569,3 +1570,4 @@ inline void Incircle(const PointType &p0, const PointType &p1
     center = BarycentricInterpolate(centerBaryCoords, p0, p1, p2);
 }
 
+} // namespace Misha

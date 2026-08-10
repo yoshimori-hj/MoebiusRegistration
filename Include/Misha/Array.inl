@@ -35,6 +35,8 @@ DAMAGE.
 #endif // _WIN32
 #include <stddef.h>
 
+namespace Misha
+{
 inline bool isfinitef( float fp ){ float f=fp; return ((*(unsigned *)&f)&0x7f800000)!=0x7f800000; }
 
 
@@ -567,3 +569,4 @@ void qsort( Array< C > base , size_t numElements , size_t elementSize , int (*co
 	}
 	qsort( base.ptr() , numElements , elementSize , compareFunction );
 }
+} // namespace Misha

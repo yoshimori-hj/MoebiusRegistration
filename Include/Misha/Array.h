@@ -44,6 +44,9 @@ DAMAGE.
 #endif // _WIN32
 #endif // _WIN64
 
+namespace Misha
+{
+
 // Code from http://stackoverflow.com
 void* aligned_malloc( size_t size , size_t align )
 {
@@ -58,10 +61,13 @@ void* aligned_malloc( size_t size , size_t align )
 	return amem;
 }
 void aligned_free( void* mem ) { free( ( ( void** )mem )[-1] ); }
+} // namespace Misha
 
 #ifdef ARRAY_DEBUG
 #pragma message ( "[WARNING] Array debugging is enabled" )
 #include "Array.inl"
+namespace Misha
+{
 #define      Pointer( ... )      Array< __VA_ARGS__ >
 #define ConstPointer( ... ) ConstArray< __VA_ARGS__ >
 template< class C > void        FreePointer( Array< C >& a ){ a.Free( ); }
@@ -88,9 +94,11 @@ template< class C > ConstArray< C > GetPointer( const C* c , size_t sz ){ return
 template< class C >       C* GetAddress(       Array< C >&  a ){ return a.ptr(); }
 template< class C > const C* GetAddress( const Array< C >&  a ){ return a.ptr(); }
 template< class C > const C* GetAddress(  ConstArray< C >&  a ){ return a.ptr(); }
-
+} // namespace Misha
 
 #else // !ARRAY_DEBUG
+namespace Misha
+{
 #define      Pointer( ... )       __VA_ARGS__*
 #define ConstPointer( ... ) const __VA_ARGS__*
 
@@ -114,8 +122,11 @@ template< class C > const C* GetPointer( const C* c , size_t sz ){ return c; }
 
 template< class C >       C* GetAddress(       C* c ) { return c; }
 template< class C > const C* GetAddress( const C* c ) { return c; }
+} // namespace Misha
 #endif // ARRAY_DEBUG
 
+namespace Misha
+{
 // [WARNING] The out-of-core array uses a buffer and is not thread-safe
 template< class Data , size_t BufferSize=64 >
 class OOCArray
@@ -196,5 +207,5 @@ public:
 		 return _buffer[ i % BufferSize ];
 	}
 };
-
+} // namespace Misha
 #endif // ARRAY_INCLUDED

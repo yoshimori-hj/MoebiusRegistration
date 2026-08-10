@@ -26,6 +26,9 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+namespace Misha
+{
+
 template< class T , class const_iterator > size_t SparseMatrixInterface< T , const_iterator >::Entries( void ) const
 {
 	size_t entries = 0;
@@ -1865,3 +1868,5 @@ void SparseMatrixInterface< T , const_iterator >::SolveGaussSeidelAndResidualPar
 	}
 }
 #endif
+
+} // namespace Misha

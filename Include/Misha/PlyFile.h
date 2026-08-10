@@ -38,16 +38,20 @@
 #ifndef PLY_FILE_INCLUDED
 #define PLY_FILE_INCLUDED
 
-
-#if !defined( WIN32 ) && !defined( _WIN64 )
-#define _strdup strdup
-#endif // !WIN32 && !_WIN64
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-    
+
+namespace Misha
+{
+#if !defined(WIN32) && !defined(_WIN64)
+	inline char *_strdup(const char *source) { return strdup(source); }
+#else
+	using ::_strdup;
+#endif // !WIN32 && !_WIN64
+
+
 #define PLY_ASCII         1      /* ascii PLY file */
 #define PLY_BINARY_BE     2      /* binary PLY file, big endian */
 #define PLY_BINARY_LE     3      /* binary PLY file, little endian */
@@ -215,6 +219,7 @@ extern void ply_free_other_elements (PlyOtherElems *);
 extern void ply_describe_other_properties(PlyFile *, PlyOtherProp *, int);
 
 extern int equal_strings( const char *, const char *);
+} // namespace Misha
 
 #include "PlyFile.inl"
 #endif // PLY_FILE_INCLUDED

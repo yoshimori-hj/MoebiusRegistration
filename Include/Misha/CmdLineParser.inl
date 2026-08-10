@@ -28,9 +28,15 @@ DAMAGE.
 
 #include <cassert>
 #include <string.h>
+#if !(defined(WIN32) || defined(_WIN64))
+#include <strings.h> // for strcasecmp
+#endif
 
+namespace Misha {
 #if defined( WIN32 ) || defined( _WIN64 )
 inline int strcasecmp( char* c1 , char* c2 ){ return _stricmp( c1 , c2 ); }
+#else
+using ::strcasecmp;
 #endif // WIN32 || _WIN64
 
 template< > void cmdLineCleanUp< int    >( int*    t ){ }
@@ -298,4 +304,4 @@ inline char** ReadWords(const char* fileName,int& cnt)
 	fclose(fp);
 	return names;
 }
-
+} // namespace Misha

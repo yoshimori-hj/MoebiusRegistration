@@ -34,6 +34,8 @@ DAMAGE.
 
 #define ALIGN_INVERSION_TO_CENTER
 
+namespace Misha
+{
 inline unsigned long long SphericalGeometry::Key( int v1 , int v2 )
 {
 	if( v1<v2 ) return ( (unsigned long long)v1 )<<32 | ( (unsigned long long )v2);
@@ -1184,3 +1186,4 @@ Point3D< Real > SphericalGeometry::CircumscribedSphere< Real >::Center( const st
 	}
 	return Point3D< Real >( x/w , y/w , z/w );
 }
+} // namespace Misha

@@ -32,6 +32,9 @@ DAMAGE.
 #include <fftw3.h>
 #include <math.h>
 
+namespace Misha
+{
+
 //////////////////
 // FourierKey1D //
 //////////////////
@@ -209,3 +212,4 @@ int FourierTransform< Real >::InverseFourier( FourierKey1D< Real >& key , Circul
 	for( int i=0 ; i<g.resolution() ; i++ ) g(i) *= n;
 	return 1;
 }
+} // namespace Misha

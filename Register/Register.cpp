@@ -39,6 +39,7 @@ DAMAGE.
 #include "Misha/Timer.h"
 #include "Misha/SphericalGeometry.h"
 
+using namespace Misha;
 
 enum
 {

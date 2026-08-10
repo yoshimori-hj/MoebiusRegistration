@@ -30,6 +30,7 @@ DAMAGE.
 #include <complex>
 #include <unordered_map>
 
+namespace Misha {
 ///////////////////
 //  SparseMatrix //
 ///////////////////
@@ -909,3 +910,4 @@ void PivotSymmetricMatrix<Matrix>::pop(void)
 {
 	rightMatrices.pop_back();
 }
+} // namespace Misha

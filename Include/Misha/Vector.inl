@@ -32,6 +32,9 @@ DAMAGE.
 #define Assert assert
 #include <cassert>
 
+namespace Misha
+{
+
 ////////////
 // Vector //
 ////////////
@@ -467,4 +470,5 @@ T NVector<T,Dim>::Dot( const NVector<T,Dim>& V ) const
 	return V0;
 }
 
+} // namespace Misha
 #endif

@@ -42,6 +42,7 @@ DAMAGE.
 #include "Misha/Timer.h"
 #include "Misha/SphericalGeometry.h"
 
+using namespace Misha;
 
 cmdLineParameter< char* > In( "in" ) , Out( "out" );
 

@@ -34,6 +34,8 @@ DAMAGE.
 #include <math.h>
 #include "fftw3.h"
 
+namespace Misha
+{
 ///////////////////
 // FourierKeySO3 //
 ///////////////////
@@ -315,3 +317,4 @@ int WignerTransform<Real>::InverseFourier( FourierKeySO3<Real>& key , RotationGr
 	for( int i=0 ; i<2*bw ; i++ ) for( int j=0 ; j<2*bw ; j++ ) for( int k=0 ; k<2*bw ; k++ ) g.values[idx++]=Real(scratch.data[2*bw*i+4*bw*bw*j+k][0]);
 	return 1;
 }
+} // namespace Misha

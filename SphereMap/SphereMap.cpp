@@ -42,6 +42,8 @@ DAMAGE.
 #include "Misha/MemoryUsage.h"
 #include "Misha/SphericalGeometry.h"
 
+using namespace Misha;
+
 enum
 {
 	MESH_TYPE_TRIANGLE ,

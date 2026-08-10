@@ -27,6 +27,7 @@ DAMAGE.
 */
 #include <unordered_map>
 
+namespace Misha {
 static const char *full_elem_names[] = { "vertex", "edge" , "face" };
 static const char *elem_names[] = { "vertex", "face" };
 
@@ -1549,3 +1550,4 @@ int PlyReadPolygonInfo
 	ply_close( ply );
 	return 1;
 }
+} // namespace Misha

@@ -32,7 +32,8 @@ DAMAGE.
 #include <fftw3.h>
 #include "Misha/Complex.h"
 
-
+namespace Misha
+{
 
 template< class Real > SquareGrid< Real >::SquareGrid( void ) : res(0) , values(NULL) { ; }
 template< class Real > SquareGrid< Real >::SquareGrid( int resolution ) : res(0) , values(NULL) { resize( resolution ); }
@@ -225,3 +226,4 @@ Real SquareGrid<Real>::Dot( const SquareGrid& g1 , const SquareGrid& g2 )
 	for( int i=0 ; i<g1.res*g1.res ; i++ ) d += g1.values[i]*g2.values[i];
 	return Real( d / ( g1.res * g1.res ) * 4 * PI * PI );
 }
+} // namespace Misha
