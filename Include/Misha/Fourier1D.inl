@@ -26,6 +26,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+#include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,7 +35,6 @@ DAMAGE.
 
 namespace Misha
 {
-
 //////////////////
 // FourierKey1D //
 //////////////////
@@ -108,7 +108,12 @@ template<class Real> Real FourierKey1D<Real>::SquareDifference(const FourierKey1
 template<class Real> Real FourierKey1D<Real>::Dot( const FourierKey1D& g1 , const FourierKey1D& g2 )
 {
 	Real d = Real(0);
-	if( g1.res!=g2.res ) fprintf( stderr , "Could not compare arrays of different sizes: %d != %d\n" , g1.dim , g2.dim ) , exit(0);
+	if( g1.res!=g2.res ) {
+		std::ostringstream ostr;
+		ostr << "Could not compare arrays of different sizes: " << g1.dim
+			 << " != " << g2.dim << "";
+		throw MishaFourierError(ostr.str());
+	}
 #if !FIX_SCALING
 	Real n = Real(1.0/(2.0*PI));
 #endif // !FIX_SCALING
@@ -142,7 +147,7 @@ template<> void FourierTransform< double >::_ForwardFourier1D( int res , Pointer
 	fftw_execute( plan );
 	fftw_destroy_plan( plan );
 }
-template< class Real > void FourierTransform< Real >::_ForwardFourier1D( int res , Pointer( Real ) values , Pointer( Complex< Real > ) coefficients ){ fprintf( stderr , "Only float and double precision FFTs supported\n" ) , exit(0); }
+template< class Real > void FourierTransform< Real >::_ForwardFourier1D( int res , Pointer( Real ) values , Pointer( Complex< Real > ) coefficients ){ throw std::logic_error("Only float and double precision FFTs supported"); }
 
 template<> void FourierTransform< float >::_InverseFourier1D( int res , Pointer( Complex< float > ) coefficients , Pointer( float ) values )
 {
@@ -156,7 +161,7 @@ template<> void FourierTransform< double >::_InverseFourier1D( int res , Pointer
 	fftw_execute( plan );
 	fftw_destroy_plan( plan );
 }
-template< class Real > void FourierTransform< Real >::_InverseFourier1D( int res , Pointer( Complex< Real > ) coefficients , Pointer( Real ) values ){ fprintf( stderr , "Only float and double precision inverse FFTs supported\n" ) , exit(0); }
+template< class Real > void FourierTransform< Real >::_InverseFourier1D( int res , Pointer( Complex< Real > ) coefficients , Pointer( Real ) values ){ throw std::logic_error("Only float and double precision inverse FFTs supported"); }
 
 template< class Real >
 int FourierTransform< Real >::ForwardFourier( CircularArray< Real >& g , FourierKey1D< Real >& key )

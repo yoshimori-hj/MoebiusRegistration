@@ -41,6 +41,7 @@ DAMAGE.
 #define FIX_SCALING 0 // Corrects the FFTs so that everything is done w.r.t. an orthonormal basis
 #define FORCE_FFTW_PRESERVE_INPUT 1
 
+#include "Error.h"
 #include "RotationGrid.h"
 #include "SphericalGrid.h"
 #include "SquareGrid.h"
@@ -49,6 +50,11 @@ DAMAGE.
 
 namespace Misha
 {
+class MishaFourierError : public MishaError
+{
+public:
+	MishaFourierError(const std::string &msg) : MishaError(msg) {}
+};
 
 // This templated class represents the fourier coefficients of a real valued, 1D signal
 // Because the input signal generating the key is assumed to be real, we know that the

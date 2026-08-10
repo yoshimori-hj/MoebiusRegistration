@@ -32,11 +32,19 @@ DAMAGE.
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+
+#include "Error.h"
 #include "SparseMatrix.h"
 #include "Vector.h"
 
 namespace Misha
 {
+class MishaSolverError : public MishaError
+{
+public:
+	MishaSolverError(const std::string &msg) : MishaError(msg) {}
+};
+
 // Code borrowed from: https://en.wikipedia.org/wiki/Golden_section_search
 template< class Real , class Functor >
 std::pair< Real , Real > GoldenSectionSearch( Functor& f , Real a , Real b , Real tolerance )
@@ -108,7 +116,7 @@ public:
 		if( !analyzeOnly )
 		{
 			_solver.factorize( _eigenM );
-			if( _solver.info()!=Eigen::Success ) fprintf( stderr , "[ERROR] EigenSolverCholeskyLLt::EigenSolverCholeskyLLt Failed to factorize matrix\n" ) , exit(0);
+			if( _solver.info()!=Eigen::Success ) throw MishaSolverError("EigenSolverCholeskyLLt::EigenSolverCholeskyLLt Failed to factorize matrix");
 		}
 		_eigenB.resize( M.Rows() );
 	}
@@ -122,10 +130,10 @@ public:
 		switch( _solver.info() )
 		{
 		case Eigen::Success: break;
-		case Eigen::NumericalIssue: fprintf( stderr , "[ERROR] EigenSolverCholeskyLLt::update Failed to factorize matrix (numerical issue)\n" ) , exit(0);
-		case Eigen::NoConvergence:  fprintf( stderr , "[ERROR] EigenSolverCholeskyLLt::update Failed to factorize matrix (no convergence)\n" ) , exit(0);
-		case Eigen::InvalidInput:   fprintf( stderr , "[ERROR] EigenSolverCholeskyLLt::update Failed to factorize matrix (invalid input)\n" ) , exit(0);
-		default: fprintf( stderr , "[ERROR] EigenSolverCholeskyLLt::update Failed to factorize matrix\n" ) , exit(0);
+		case Eigen::NumericalIssue: throw MishaSolverError("EigenSolverCholeskyLLt::update Failed to factorize matrix (numerical issue)");
+		case Eigen::NoConvergence:  throw MishaSolverError("EigenSolverCholeskyLLt::update Failed to factorize matrix (no convergence)");
+		case Eigen::InvalidInput:   throw MishaSolverError("EigenSolverCholeskyLLt::update Failed to factorize matrix (invalid input)");
+		default: throw MishaSolverError("EigenSolverCholeskyLLt::update Failed to factorize matrix");
 		}
 	}
 	void solve( const Real* b , Real* x )
@@ -162,7 +170,8 @@ public:
 		if( !analyzeOnly )
 		{
 			_solver.factorize( eigenM );
-			if( _solver.info()!=Eigen::Success ) fprintf( stderr , "[ERROR] EigenSolverCholeskyLDLt::EigenSolverCholeskyLDLt Failed to factorize matrix\n" ) , exit(0);
+			if( _solver.info()!=Eigen::Success )
+				throw MishaSolverError("EigenSolverCholeskyLDLt::EigenSolverCholeskyLDLt Failed to factorize matrix");
 		}
 		_eigenB.resize( M.Rows() );
 	}
@@ -174,7 +183,8 @@ public:
 		for( int i=0 ; i<M.Rows() ; i++ ) for( int j=0 ; j<(int)M.RowSize(i) ; j++ ) triplets.push_back( Eigen::Triplet< double >( i , M[i][j].N , M[i][j].Value ) );
 		eigenM.setFromTriplets( triplets.begin() , triplets.end() );
 		_solver.factorize( eigenM );
-		if( _solver.info()!=Eigen::Success ) fprintf( stderr , "[ERROR] EigenSolverCholeskyLDLt::update Failed to factorize matrix\n" ) , exit(0);
+		if( _solver.info()!=Eigen::Success )
+			throw MishaSolverError("EigenSolverCholeskyLDLt::update Failed to factorize matrix");
 	}
 	void solve( const Real* b , Real* x )
 	{

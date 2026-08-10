@@ -26,11 +26,13 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+#include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <fftw3.h>
 #include "Misha/Complex.h"
+#include "Misha/SquareGrid.h"
 
 namespace Misha
 {
@@ -221,7 +223,12 @@ template< class Real > Real SquareGrid<Real>::SquareDifference( const SquareGrid
 template<class Real>
 Real SquareGrid<Real>::Dot( const SquareGrid& g1 , const SquareGrid& g2 )
 {
-	if( g1.res!=g2.res ) fprintf(stderr,"Could not compare arrays of different sizes: %d != %d\n",g1.res,g2.res) , exit(0);
+	if( g1.res!=g2.res ) {
+		std::ostringstream ostr;
+		ostr << "Could not compare arrays of different sizes: "
+			 << g1.res << " != " << g2.res;
+		throw MishaSquareGridError(ostr.str());
+	}
 	Real d = 0;
 	for( int i=0 ; i<g1.res*g1.res ; i++ ) d += g1.values[i]*g2.values[i];
 	return Real( d / ( g1.res * g1.res ) * 4 * PI * PI );

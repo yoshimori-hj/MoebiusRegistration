@@ -29,12 +29,19 @@ DAMAGE.
 #ifndef ROTATION_GRID_INCLUDED
 #define ROTATION_GRID_INCLUDED
 
+#include "Error.h"
+
 #ifndef PI
 #define PI 3.1415926535897932384
 #endif
 
 namespace Misha
 {
+class MishaRotationGridError : public MishaError
+{
+public:
+  MishaRotationGridError(const std::string &msg) : MishaError(msg) {}
+};
 
 // This templated class represents a function on the group of rotations, where index (i,j,k) corresponds
 // to the rotation with Euler coefficients:

@@ -26,6 +26,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+#include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -262,8 +263,10 @@ template<class Real>
 Real RotationGrid<Real>::Dot(const RotationGrid& g1,const RotationGrid& g2){
 	double d=0,c=1;
 	if(g1.res != g2.res){
-		fprintf(stderr,"Could not compare arrays of different sizes: %d != %d\n",g1.res,g2.res);
-		exit(0);
+		std::ostringstream ostr;
+		ostr << "Could not compare arrays of different sizes: "
+			 << g1.res << " != " << g2.res;
+		throw MishaRotationGridError(ostr.str());
 	}
 	for(int i=0;i<g1.res;i++){
 		double t1 =cos(PI*(2.0*i+2)/(2.0*g1.res));

@@ -29,12 +29,20 @@ DAMAGE.
 #ifndef GRID_INCLUDED
 #define GRID_INCLUDED
 
+#include "Misha/Error.h"
+
 #ifndef PI
 #define PI 3.1415926535897932384
 #endif
 
 namespace Misha
 {
+class MishaSquareGridError : public MishaError
+{
+public:
+	MishaSquareGridError(const std::string &msg) : MishaError(msg) {}
+};
+
 // This class represents a set of regular samples of a real-valued, periodic, function in 2D
 template<class Real=float>
 class SquareGrid

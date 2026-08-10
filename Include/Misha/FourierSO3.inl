@@ -26,6 +26,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+#include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -117,7 +118,12 @@ template<class Real> Real FourierKeySO3<Real>::Dot( const FourierKeySO3& g1 , co
 {
 	Real d = Real(0);
 	int idx=0;
-	if(g1.bw != g2.bw) fprintf( stderr , "Could not compare arrays of different sizes: %d != %d\n" , g1.bw , g2.bw ) , exit(0);
+	if(g1.bw != g2.bw) {
+		std::ostringstream ostr;
+		ostr << "Could not compare arrays of different sizes: " << g1.bw
+			 << " != " << g2.bw << "";
+		throw MishaFourierError(ostr.str());
+	}
 	for( int i=0 ; i<g1.bw ; i++ ) for( int j=0 ; j<=i ; j++ )
 	{
 		d += g1(i,j,0).r * g2(i,j,0).r;

@@ -35,8 +35,15 @@ DAMAGE.
 #define PI 3.1415926535897932384
 #endif
 
+#include "Error.h"
+
 namespace Misha
 {
+class MishaSphericalGridError : public MishaError
+{
+public:
+	MishaSphericalGridError(const std::string &msg) : MishaError(msg) {}
+};
 
 // This templated class represents a spherical function, where index (i,j) corresponds to the
 // point on the sphere with spherical coordinates:

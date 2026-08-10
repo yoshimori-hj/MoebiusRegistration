@@ -28,6 +28,8 @@ DAMAGE.
 #ifndef SPARSE_MATRIX_INTERFACE_INCLUDED
 #define SPARSE_MATRIX_INTERFACE_INCLUDED
 
+#include "Error.h"
+
 #define OWN_MEMORY 1
 #define USE_SIZE_T_INDEX 0
 #define FORCE_TWO_BYTE_ALIGNMENT 1
@@ -37,6 +39,12 @@ DAMAGE.
 
 namespace Misha
 {
+class MishaSparseMatrixInterfaceError : public MishaError
+{
+public:
+	MishaSparseMatrixInterfaceError(const std::string &msg) : MishaError(msg) {}
+};
+
 #if FORCE_TWO_BYTE_ALIGNMENT
 #pragma pack(push)
 #pragma pack(2)

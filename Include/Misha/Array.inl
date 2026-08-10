@@ -27,6 +27,7 @@ DAMAGE.
 */
 #define FULL_ARRAY_DEBUG    0	// Note that this is not thread-safe
 
+#include <sstream>
 #include <stdio.h>
 #include <emmintrin.h>
 #include <vector>
@@ -79,10 +80,12 @@ protected:
 	{
 		if( idx<min || idx>=max )
 		{
-			if( message ) fprintf( stderr , "Array index out-of-bounds: %lld <= %lld < %lld [%s]\n" , min , idx , max , message );
-			else fprintf( stderr , "Array index out-of-bounds: %lld <= %lld < %lld\n" , min , idx , max );
-			ASSERT( 0 );
-			exit( 0 );
+			std::ostringstream ostr;
+			ostr << "Array index out-of-bounds: " << min
+				 << " <= " << idx << " < " << max << "";
+			if (message)
+				ostr << " [" << message << "]";
+			throw MishaArrayBoundsError(ostr.str());
 		}
 	}
 	C *data , *_data;
@@ -103,8 +106,8 @@ protected:
 			for( idx=0 ; idx<memoryInfo.size( ) ; idx++ ) if( memoryInfo[idx].address==ptr ) break;
 			if( idx==memoryInfo.size() )
 			{
-				fprintf( stderr , "Could not find memory in address table\n" );
-				ASSERT( 0 );
+				throw MishaArrayMemoryTableError(
+					"Could not find memory in address table");
 			}
 			else
 			{
@@ -208,9 +211,11 @@ public:
 			max = ( a.maximum() * szD ) / szC;
 			if( min*szC!=a.minimum()*szD || max*szC!=a.maximum()*szD )
 			{
-				fprintf( stderr , "Could not convert array [ %lld , %lld ] * %lld => [ %lld , %lld ] * %lld\n" , a.minimum() , a.maximum() , szD , min , max , szC );
-				ASSERT( 0 );
-				exit( 0 );
+				std::ostringstream ostr;
+				ostr << "Could not convert array [ " << a.minimum() << " , "
+					 << a.maximum() << " ] * " << szD << " => [ " << min
+					 << " , " << max << " ] * " << szC << "";
+				throw MishaArrayConversionError(ostr.str());
 			}
 		}
 	}
@@ -313,9 +318,10 @@ protected:
 	{
 		if( idx<min || idx>=max )
 		{
-			fprintf( stderr , "ConstArray index out-of-bounds: %lld <= %lld < %lld\n" , min , idx , max );
-			ASSERT( 0 );
-			exit( 0 );
+			std::ostringstream ostr;
+			ostr << "ConstArray index out-of-bounds: " << min << " <= " << idx
+				 << " < " << max << "";
+			throw MishaArrayBoundsError(ostr.str());
 		}
 	}
 protected:
@@ -350,9 +356,12 @@ public:
 		if( min*szC!=a.minimum()*szD || max*szC!=a.maximum()*szD )
 		{
 			//			fprintf( stderr , "Could not convert const array [ %lld , %lld ] * %lld => [ %lld , %lld ] * %lld\n" , a.minimum() , a.maximum() , szD , min , max , szC );
-			fprintf( stderr , "Could not convert const array [ %lld , %lld ] * %lld => [ %lld , %lld ] * %lld\n %lld %lld %lld\n" , a.minimum() , a.maximum() , szD , min , max , szC , a.minimum() , a.minimum()*szD , (a.minimum()*szD)/szC );
-			ASSERT( 0 );
-			exit( 0 );
+			std::ostringstream ostr;
+			ostr << "Could not convert const array [ " << a.minimum() << " , "
+				 << a.maximum() << " ] * " << szD << " => [ " << min << " , "
+				 << max << " ] * " << szC << "\n " << a.minimum() << " "
+				 << a.minimum() * szD << " " << (a.minimum() * szD) / szC;
+			throw MishaArrayConversionError(ostr.str());
 		}
 	}
 	template< class D >
@@ -366,9 +375,11 @@ public:
 		max = ( a.maximum() * szD ) / szC;
 		if( min*szC!=a.minimum()*szD || max*szC!=a.maximum()*szD )
 		{
-			fprintf( stderr , "Could not convert array [ %lld , %lld ] * %lld => [ %lld , %lld ] * %lld\n" , a.minimum() , a.maximum() , szD , min , max , szC );
-			ASSERT( 0 );
-			exit( 0 );
+			std::ostringstream ostr;
+			ostr << "Could not convert const array [ " << a.minimum() << " , "
+				 << a.maximum() << " ] * " << szD << " => [ " << min << " , "
+				 << max << " ] * " << szC;
+			throw MishaArrayConversionError(ostr.str());
 		}
 	}
 	static ConstArray FromPointer( const C* data , difference_type max )
@@ -439,9 +450,10 @@ Array< C > memcpy( Array< C > destination , const void* source , size_t size )
 {
 	if( size>destination.maximum()*sizeof(C) )
 	{
-		fprintf( stderr , "Size of copy exceeds destination maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( destination.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds destination maximum: " << size << " > "
+			 << destination.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size ) memcpy( &destination[0] , source , size );
 	return destination;
@@ -451,15 +463,17 @@ Array< C > memcpy( Array< C > destination , Array< D > source , size_t size )
 {
 	if( size>destination.maximum()*sizeof( C ) )
 	{
-		fprintf( stderr , "Size of copy exceeds destination maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( destination.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds destination maximum: " << size << " > "
+			 << destination.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size>source.maximum()*sizeof( D ) )
 	{
-		fprintf( stderr , "Size of copy exceeds source maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( source.maximum()*sizeof( D ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds source maximum: " << size << " > "
+			 << source.maximum() * sizeof(D);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size ) memcpy( &destination[0] , &source[0] , size );
 	return destination;
@@ -469,15 +483,17 @@ Array< C > memcpy( Array< C > destination , ConstArray< D > source , size_t size
 {
 	if( size>destination.maximum()*sizeof( C ) )
 	{
-		fprintf( stderr , "Size of copy exceeds destination maximum: %lld > %lld\n" , ( long long )( size ) , ( long  long )( destination.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds destination maximum: " << size << " > "
+			 << destination.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size>source.maximum()*sizeof( D ) )
 	{
-		fprintf( stderr , "Size of copy exceeds source maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( source.maximum()*sizeof( D ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds source maximum: " << size << " > "
+			 << source.maximum() * sizeof(D);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size ) memcpy( &destination[0] , &source[0] , size );
 	return destination;
@@ -487,9 +503,10 @@ void* memcpy( void* destination , Array< D > source , size_t size )
 {
 	if( size>source.maximum()*sizeof( D ) )
 	{
-		fprintf( stderr , "Size of copy exceeds source maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( source.maximum()*sizeof( D ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+          std::ostringstream ostr;
+          ostr << "Size of copy exceeds source maximum: " << size << " > "
+               << source.maximum() * sizeof(D);
+          throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size ) memcpy( destination , &source[0] , size );
 	return destination;
@@ -499,9 +516,10 @@ void* memcpy( void* destination , ConstArray< D > source , size_t size )
 {
 	if( size>source.maximum()*sizeof( D ) )
 	{
-		fprintf( stderr , "Size of copy exceeds source maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( source.maximum()*sizeof( D ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+          std::ostringstream ostr;
+          ostr << "Size of copy exceeds source maximum: " << size << " > "
+               << source.maximum() * sizeof(D);
+          throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size ) memcpy( destination , &source[0] , size );
 	return destination;
@@ -511,9 +529,10 @@ Array< C > memset( Array< C > destination , int value , size_t size )
 {
 	if( size>destination.maximum()*sizeof( C ) )
 	{
-		fprintf( stderr , "Size of set exceeds destination maximum: %lld > %lld\n" , ( long long )( size ) , ( long long )( destination.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds destination maximum: " << size << " > "
+			 << destination.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( size ) memset( &destination[0] , value , size );
 	return destination;
@@ -524,9 +543,10 @@ size_t fread( Array< C > destination , size_t eSize , size_t count , FILE* fp )
 {
 	if( count*eSize>destination.maximum()*sizeof( C ) )
 	{
-		fprintf( stderr , "Size of read exceeds source maximum: %lld > %lld\n" , ( long long )( count*eSize ) , ( long long )( destination.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds source maximum: " << count * eSize
+			 << " > " << destination.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	return fread( &destination[0] , eSize , count , fp );
 }
@@ -535,9 +555,10 @@ size_t fwrite( Array< C > source , size_t eSize , size_t count , FILE* fp )
 {
 	if( count*eSize>source.maximum()*sizeof( C ) )
 	{
-		fprintf( stderr , "Size of write exceeds source maximum: %lld > %lld\n" , ( long long )( count*eSize ) , ( long long )( source.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds source maximum: " << count * eSize
+			 << " > " << source.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	return fwrite( &source[0] , eSize , count , fp );
 }
@@ -546,9 +567,10 @@ size_t fwrite( ConstArray< C > source , size_t eSize , size_t count , FILE* fp )
 {
 	if( count*eSize>source.maximum()*sizeof( C ) )
 	{
-		fprintf( stderr , "Size of write exceeds source maximum: %lld > %lld\n" , ( long long )( count*eSize ) , ( long long )( source.maximum()*sizeof( C ) ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Size of copy exceeds source maximum: " << count * eSize
+			 << " > " << source.maximum() * sizeof(C);
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	return fwrite( &source[0] , eSize , count , fp );
 }
@@ -557,15 +579,17 @@ void qsort( Array< C > base , size_t numElements , size_t elementSize , int (*co
 {
 	if( sizeof(C)!=elementSize )
 	{
-		fprintf( stderr , "Element sizes differ: %lld != %lld\n" , ( long long )( sizeof(C) ) , ( long long )( elementSize ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Element sizes differ: " << sizeof(C) << " != " << elementSize;
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	if( base.minimum()>0 || base.maximum()<numElements )
 	{
-		fprintf( stderr , "Array access out of bounds: %lld <= 0 <= %lld <= %lld\n" , base.minimum() , base.maximum() , ( long long )( numElements ) );
-		ASSERT( 0 );
-		exit( 0 );
+		std::ostringstream ostr;
+		ostr << "Array access out of bounds: " << base.minimum()
+			 << " <= 0 <= " << base.maximum() << " <= " << numElements
+			 << "\n";
+		throw MishaArrayBoundsError(ostr.str());
 	}
 	qsort( base.ptr() , numElements , elementSize , compareFunction );
 }

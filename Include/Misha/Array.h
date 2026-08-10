@@ -29,23 +29,38 @@ DAMAGE.
 #ifndef ARRAY_INCLUDED
 #define ARRAY_INCLUDED
 
+#include "Error.h"
+
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
 
-#ifdef _WIN64
-#define ASSERT( x ) { if( !( x ) ) __debugbreak(); }
-#else // !_WIN64
-#ifdef _WIN32
-#define ASSERT( x ) { if( !( x ) ) _asm{ int 0x03 } }
-#else // !_WIN32
-#define ASSERT( x ) { if( !( x ) ) exit(0); }
-#endif // _WIN32
-#endif // _WIN64
-
 namespace Misha
 {
+class MishaArrayError : public MishaError
+{
+public:
+  MishaArrayError(const std::string &msg) : MishaError(msg) {}
+};
+
+class MishaArrayBoundsError : public MishaArrayError
+{
+public:
+  MishaArrayBoundsError(const std::string &msg) : MishaArrayError(msg) {}
+};
+
+class MishaArrayMemoryTableError : public MishaArrayError
+{
+public:
+  MishaArrayMemoryTableError(const std::string &msg) : MishaArrayError(msg) {}
+};
+
+class MishaArrayConversionError : public MishaArrayError
+{
+public:
+  MishaArrayConversionError(const std::string &msg) : MishaArrayError(msg) {}
+};
 
 // Code from http://stackoverflow.com
 void* aligned_malloc( size_t size , size_t align )
@@ -161,7 +176,8 @@ class OOCArray
 		mktemp ( _fileName );
 		_fp = fopen( _fileName , "w+b" );
 #endif // _WIN32
-		if( !_fp ) fprintf( stderr , "[ERROR] Failed to open file for writing: %s\n" , _fileName ) , exit( 0 );
+		if (!_fp)
+			throw MishaFileError(std::string("ailed to open file for writing: ") + _fileName);
 		_currentBufferIndex = 0;
 	}
 public:

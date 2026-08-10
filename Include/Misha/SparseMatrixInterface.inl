@@ -26,6 +26,8 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+#include <sstream>
+
 namespace Misha
 {
 
@@ -576,7 +578,12 @@ template< class T2 >
 ParallelSolution< T2 >::ParallelSolution( int iters , const std::vector< int >& entriesPerSlice , const std::vector< int >& slicesPerThread , int sliceDependence )
 {
 	_threads = slicesPerThread.size();
-	if( _threads<1 ) fprintf( stderr , "Could not allocate ParallelSolution with no threads: %d\n" , _threads ) , exit( 0 );
+	if (_threads < 1) {
+		std::ostringstream ostr;
+		ostr << "Could not allocate ParallelSolution with no threads: "
+			 << _threads;
+		throw MishaSparseMatrixInterfaceError(ostr.str());
+	}
 
 	_iters = iters;
 #if OWN_MEMORY
@@ -1056,7 +1063,12 @@ ParallelSolution2< T2 >::ParallelSolution2( int iters , const std::vector< int >
 {
 if( iters<1 ) iters = 5;
 	_threads = slicesPerThread.size();
-	if( _threads<1 ) fprintf( stderr , "Could not allocate ParallelSolution with no threads: %d\n" , _threads ) , exit( 0 );
+	if( _threads<1 ) {
+		std::ostringstream ostr;
+		ostr << "Could not allocate ParallelSolution with no threads: "
+			 << _threads;
+		throw MishaSparseMatrixInterfaceError(ostr.str());
+	}
 	_iters = iters;
 	_linesPerSlice   = linesPerSlice;
 	_sliceDependence = sliceDependence;

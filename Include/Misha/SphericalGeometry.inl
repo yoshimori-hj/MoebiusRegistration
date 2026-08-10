@@ -27,6 +27,7 @@ DAMAGE.
 */
 
 #include <algorithm>
+#include <sstream>
 #include <unordered_set>
 #include <random>
 #include "Misha/Timer.h"
@@ -66,7 +67,11 @@ SquareMatrix< Real , 3 > SphericalGeometry::Correlate( SphericalGrid< Real >& so
 		}
 
 	// Allocate memory 
-	if( !keySO3.resize( source.resolution() ) ) fprintf( stderr , "[ERROR] Correlate: Could not allocate key: %d\n" , source.resolution() ) , exit( 0 ); 
+	if( !keySO3.resize( source.resolution() ) ) {
+		std::ostringstream ostr;
+		ostr << "Correlate: Could not allocate key: " << source.resolution();
+		throw MishaSphericalGeometryError(ostr.str());
+	}
 
 	// Compute the aligning rotation
 #ifdef _OPENMP
@@ -280,7 +285,7 @@ void SphericalGeometry::Mesh< Real >::read( const char* fileName , std::vector< 
 	bool propertyFlags[ PlyParametrizedVertex< float , Real >::ReadComponents ];
 	std::vector< PlyParametrizedVertex< float , Real > > _vertices;
 	PlyReadPolygons( fileName , _vertices , polygons , PlyParametrizedVertex< float , Real >::WriteProperties , propertyFlags , PlyParametrizedVertex< float , Real >::WriteComponents , plyType , NULL , 0 );
-	if( !(propertyFlags[3] && propertyFlags[4] && propertyFlags[5] ) ) fprintf( stderr , "[ERROR] Couldn't find spherical parametrization\n" ) , exit( 0 );
+	if( !(propertyFlags[3] && propertyFlags[4] && propertyFlags[5] ) ) throw MishaSphericalGeometryError("Couldn't find spherical parametrization");
 	vertices.resize( _vertices.size() );
 	for( int i=0 ; i<vertices.size() ; i++ ) this->vertices[i] = Point3D< Real >( _vertices[i].param ) , vertices[i] = Point3D< Real >( _vertices[i].point );
 	masses.resize( polygons.size() );
@@ -296,7 +301,7 @@ bool SphericalGeometry::Mesh< Real >::read( const char* fileName , std::vector< 
 	bool propertyFlags[ PlyParametrizedColorVertex< float , Real >::ReadComponents ];
 	std::vector< PlyParametrizedColorVertex< float , Real > > _vertices;
 	PlyReadPolygons( fileName , _vertices , polygons , PlyParametrizedColorVertex< float , Real >::WriteProperties , propertyFlags , PlyParametrizedColorVertex< float , Real >::WriteComponents , plyType , NULL , 0 );
-	if( !(propertyFlags[3] && propertyFlags[4] && propertyFlags[5] ) ) fprintf( stderr , "[ERROR] Couldn't find spherical parametrization\n" ) , exit( 0 );
+	if( !(propertyFlags[3] && propertyFlags[4] && propertyFlags[5] ) ) throw MishaSphericalGeometryError("Couldn't find spherical parametrization");
 	bool hasColor = (propertyFlags[6]||propertyFlags[9]) && (propertyFlags[7]||propertyFlags[10]) && (propertyFlags[8]||propertyFlags[11]);
 
 	this->vertices.resize( _vertices.size() ) , vertices.resize( _vertices.size() ) , colors.resize( _vertices.size() );
@@ -926,7 +931,7 @@ void SphericalGeometry::Tessellation< Real >::_collapseCells( std::vector< Verte
 					found = true;
 					break;
 				}
-				if( !found ) fprintf( stderr , "[ERROR] Couldn't find next edge\n" ) , exit( 0 );
+				if( !found ) throw MishaSphericalGeometryError("Couldn't find next edge");
 			}
 #ifdef _OPENMP
 #pragma omp critical

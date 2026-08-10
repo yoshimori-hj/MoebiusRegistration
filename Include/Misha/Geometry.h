@@ -29,16 +29,25 @@ DAMAGE.
 #define GEOMETRY_INCLUDED
 #include <cstring>
 #include <complex>
+#include <stdexcept>
 #include <vector>
 #include <unordered_map>
 #include <initializer_list>
 #include "Algebra.h"
+
+#include "Error.h"
 
 #define PAN_FIX 1
 #define FAST_POINT 1
 
 namespace Misha
 {
+class MishaGeometryError : public MishaError
+{
+public:
+	MishaGeometryError(const std::string &msg) : MishaError(msg) {}
+};
+
 template< class Real > Real Random( void );
 
 template< class Real , int Dim >
@@ -47,7 +56,8 @@ class Point : public InnerProductSpace< Real , Point< Real , Dim > >
 	void _init( int d )
 	{
 		if( !d ) memset( coords , 0 , sizeof(Real)*Dim );
-		else fprintf( stderr , "[ERROR] Point::_init: Should never be called\n" ) , exit( 0 );
+		else
+			throw std::logic_error("Point::_init: Should never be called");
 	}
 	template< class _Real , class ... _Reals > void _init( int d , _Real v , _Reals ... values )
 	{

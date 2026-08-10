@@ -974,7 +974,7 @@ void MergeFacets
 				int fSize = FacetSize( facets[f] );
 				int v;
 				for( v=0 ; v<fSize ; v++ ) if( facets[f][v]==v2 && facets[f][(v+1)%fSize]==v1 ) break;
-				if( v==fSize ) fprintf( stderr , "[Error] Couldn't find opposite edge in facet\n" ) , exit( 0 );
+				if( v==fSize ) throw MishaGeometryError("Couldn't find opposite edge in facet");
 				// Add in the chain of vertices into the current loop.
 				polyLoop[i1].second = polyLoop.size();
 				for( int i=(v+2)%fSize ; i!=v ; i=( (i+1)%fSize ) )

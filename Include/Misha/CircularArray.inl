@@ -26,6 +26,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
 DAMAGE.
 */
 
+#include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -135,8 +136,10 @@ template<class Real>
 Real CircularArray<Real>::Dot(const CircularArray& g1,const CircularArray& g2){
 	Real d=0;
 	if(g1.res != g2.res){
-		fprintf(stderr,"Could not compare arrays of different sizes: %d != %d\n",g1.res,g2.res);
-		exit(0);
+		std::ostringstream ostr;
+		ostr << "Could not compare arrays of different sizes: " << g1.res
+			 << " != " << g2.res << "";
+		throw MishaCircularArrayError(ostr.str());
 	}
 	for(int i=0;i<g1.res;i++){d+=g1.values[i]*g2.values[i];}
 	return Real(d/g1.res*2.0*PI);

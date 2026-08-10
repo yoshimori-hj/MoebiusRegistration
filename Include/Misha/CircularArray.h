@@ -30,12 +30,20 @@ DAMAGE.
 #ifndef CIRCULAR_ARRAY_INCLUDED
 #define CIRCULAR_ARRAY_INCLUDED
 
+#include "Error.h"
+
 #ifndef PI
 #define PI 3.1415926535897932384
 #endif
 
 namespace Misha
 {
+class MishaCircularArrayError : public MishaError
+{
+public:
+  MishaCircularArrayError(const std::string &msg) : MishaError(msg) {}
+};
+
 // This templated class represents a set of regular samples of a real-valued function on the unit-circle
 template<class Real=float>
 class CircularArray

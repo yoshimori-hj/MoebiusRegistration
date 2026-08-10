@@ -37,8 +37,16 @@ DAMAGE.
 #include "Misha/SphericalHarmonics.h"
 #include "Misha/Solver.h"
 
+#include "Error.h"
+
 namespace Misha
 {
+class MishaSphericalGeometryError : public MishaError
+{
+public:
+	MishaSphericalGeometryError(const std::string &msg) : MishaError(msg) {}
+};
+
 template< class Real > std::ostream& operator << ( std::ostream& os , const Point2D< Real > p ){ return os << "(" << p[0] << "," << p[1] << ")"; }
 template< class Real > std::ostream& operator << ( std::ostream& os , const Point3D< Real > p ){ return os << "(" << p[0] << "," << p[1] << "," << p[2] << ")"; }
 

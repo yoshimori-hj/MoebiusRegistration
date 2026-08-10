@@ -101,7 +101,7 @@ public:
         PROCESS_MEMORY_COUNTERS pmc;
 
         if ( GetProcessMemoryInfo( hProcess, &pmc, sizeof(pmc)) ) return  pmc.PeakWorkingSetSize;
-        else fprintf( stderr , "Failed to get peak working size\n" ) , exit( 0 );
+        else throw MishaError("Failed to get peak working size");
     }
     ////////////////////////////////////////////////////////////////////////////
     // Gets the maximum megabytes of memory used during the program's run
