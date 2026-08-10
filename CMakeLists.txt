@@ -10,9 +10,6 @@ pkg_check_modules(FFTW3 REQUIRED fftw3 fftw3f)
 option(ENABLE_OPENMP "Enable OpenMP" OFF)
 if(ENABLE_OPENMP)
   find_package(OpenMP REQUIRED)
-  set(OPENMP_TARGET "OpenMP::OpenMP_CXX")
-else()
-  unset(OPENMP_TARGET)
 endif()
 
 option(WITH_SYSTEM_EIGEN3 "Use system installed Eigen3" ON)
@@ -34,6 +31,9 @@ endif()
 
 # SO(3) Fourier Transform
 set(SOFTDIR "${BASEDIR}/SOFT1.0")
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 add_library(
   SOFT
@@ -78,8 +78,6 @@ if(SOFT_TYPE STREQUAL "SHARED_LIBRARY")
   target_compile_definitions(SOFT INTERFACE SOFT_IMPORT)
 endif()
 
-set_target_properties(SOFT PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED
-                                                      FALSE)
 target_link_libraries(SOFT PUBLIC ${FFTW3_LIBRARIES})
 
 target_include_directories(
@@ -91,7 +89,10 @@ target_include_directories(
 set(MISHA_INCDIR "${BASEDIR}/Include")
 add_library(Misha INTERFACE)
 target_include_directories(Misha INTERFACE "$<BUILD_INTERFACE:${MISHA_INCDIR}>")
-target_link_libraries(Misha INTERFACE SOFT ${EIGEN} ${OPENMP_TARGET})
+target_link_libraries(Misha INTERFACE SOFT ${EIGEN})
+if(ENABLE_OPENMP)
+  target_link_libraries(Misha INTERFACE OpenMP::OpenMP_CXX)
+endif()
 
 # Tools
 set(REGISTER_DIR "${BASEDIR}/Register")
