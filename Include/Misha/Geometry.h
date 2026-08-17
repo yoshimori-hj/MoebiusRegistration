@@ -29,6 +29,7 @@ DAMAGE.
 #define GEOMETRY_INCLUDED
 #include <cstring>
 #include <complex>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 #include <unordered_map>
@@ -198,8 +199,8 @@ public:
 	Real subDeterminant( int c , int r ) const;
 	Real determinant( void ) const;
 	Real trace( void ) const;
-	SquareMatrix inverse( bool& success ) const;
-	SquareMatrix inverse( void ) const;
+	SquareMatrix inverse( bool& success, std::ostream &warning_output=std::cerr ) const;
+	SquareMatrix inverse( std::ostream &warning_output=std::cerr ) const;
 	SquareMatrix transpose( void ) const { return Matrix< Real , Dim , Dim >::transpose(); }
 
 	// [NOTE] Disabling because we would like the product to be returned as a square matrix

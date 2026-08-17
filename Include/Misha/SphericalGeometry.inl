@@ -27,6 +27,8 @@ DAMAGE.
 */
 
 #include <algorithm>
+#include <iomanip>
+#include <ios>
 #include <sstream>
 #include <unordered_set>
 #include <random>
@@ -520,7 +522,7 @@ SphericalGeometry::FractionalLinearTransformation< Real > SphericalGeometry::Mes
 }
 
 template< class Real >
-int SphericalGeometry::Mesh< Real >::normalize( int iters , double cutOff , bool gaussNewton , const CenterToInversion& c2i , int verbose )
+int SphericalGeometry::Mesh< Real >::normalize( int iters , double cutOff , bool gaussNewton , const CenterToInversion& c2i , int verbose , std::ostream &verbose_output , std::ostream &warning_output )
 {
 	Timer timer;
 	for( int i=0 ; i<iters ; i++ )
@@ -539,7 +541,7 @@ int SphericalGeometry::Mesh< Real >::normalize( int iters , double cutOff , bool
 		SquareMatrix< Real , 3 > D = dCenter( );
 		if( gaussNewton )
 		{
-			SquareMatrix< Real , 3 > D2 = ( D.transpose() * D ).inverse();
+			SquareMatrix< Real , 3 > D2 = ( D.transpose() * D ).inverse(warning_output);
 			c = - D2 * ( D * c );
 		}
 		else c = - D * c * 2;
@@ -559,7 +561,7 @@ int SphericalGeometry::Mesh< Real >::normalize( int iters , double cutOff , bool
 
 template< class Real >
 template< unsigned int SHDegree >
-int SphericalGeometry::Mesh< Real >::normalizeSH( int iters , int advectionSteps , Real advectionStepSize , double cutOff , bool gaussNewton , int verbose )
+int SphericalGeometry::Mesh< Real >::normalizeSH( int iters , int advectionSteps , Real advectionStepSize , double cutOff , bool gaussNewton , int verbose , std::ostream &verbose_output , std::ostream &warning_output )
 {
 	static const unsigned int Dim = SphericalHarmonics::Dimension< SHDegree >() - 1;
 	auto SubPoint = [&]( const Point< Real , SphericalHarmonics::Dimension< SHDegree >() >& p )
@@ -583,20 +585,20 @@ int SphericalGeometry::Mesh< Real >::normalizeSH( int iters , int advectionSteps
 
 		if( verbose>1 )
 		{
-			printf( "M-center[%d]: %8.2e\t" , i , sqrt( Point< Real , Dim >::SquareNorm( c ) ) );
-			printf( "( " );
-			for( int i=0 ; i<Dim ; i++ ) printf( " %8.1e" , c[i] );
-			printf( " )\n" );
+			verbose_output << "M-center[" << i << "]: " << std::setw(8) << std::setprecision(2) << std::scientific << sqrt( Point< Real , Dim >::SquareNorm( c ) ) << "\t";
+			verbose_output << "( ";
+			for( int i=0 ; i<Dim ; i++ ) verbose_output << " " << std::setw(8) << std::setprecision(1) << std::scientific << c[i];
+			verbose_output << " )\n";
 		}
 		if( Point< Real , Dim >::SquareNorm( c )<=cutOff*cutOff )
 		{
 			if( verbose==1 )
 			{
 				Point< Real , Dim > c = SubPoint ( centerSH< SHDegree >() );
-				printf( "M-center[%d] %.2f(s): %8.2e\t" , i , timer.elapsed() , sqrt( Point< Real , Dim >::SquareNorm( c ) ) );
-				printf( "( " );
-				for( int i=0 ; i<Dim ; i++ ) printf( " %8.1e" , c[i] );
-				printf( " )\n" );
+				verbose_output << "M-center[" << i << "] " << std::setprecision(2) << std::fixed << timer.elapsed() << "(s): " << std::setw(8) << std::setprecision(2) << std::scientific << sqrt( Point< Real , Dim >::SquareNorm( c ) ) << "\t";
+				verbose_output << "( ";
+				for( int i=0 ; i<Dim ; i++ ) verbose_output << " " << std::setw(8) << std::setprecision(2) << std::scientific << c[i];
+				verbose_output << " )\n";
 			}
 			return i;
 		}
@@ -604,7 +606,7 @@ int SphericalGeometry::Mesh< Real >::normalizeSH( int iters , int advectionSteps
 		SquareMatrix< Real , Dim > D = SubMatrix( dCenterSH< SHDegree >() );
 		if( gaussNewton )
 		{
-			SquareMatrix< Real , Dim > D2 = ( D.transpose() * D ).inverse();
+			SquareMatrix< Real , Dim > D2 = ( D.transpose() * D ).inverse(warning_output);
 			c = - D2 * ( D * c );
 		}
 		else c = - D * c * 2;
@@ -616,10 +618,10 @@ int SphericalGeometry::Mesh< Real >::normalizeSH( int iters , int advectionSteps
 	if( verbose )
 	{
 		Point< Real , Dim > c = SubPoint ( centerSH< SHDegree >() );
-		printf( "M-center[%d] %.2f(s): %8.2e\t" , iters , timer.elapsed() , sqrt( Point< Real , Dim >::SquareNorm( c ) ) );
-		printf( "( " );
-		for( int i=0 ; i<Dim ; i++ ) printf( " %8.1e" , c[i] );
-		printf( " )\n" );
+		verbose_output << "M-center[" << iters << "] " << std::setprecision(2) << std::fixed << timer.elapsed() << "(s): " << std::setw(2) << std::setprecision(2) << std::scientific << sqrt( Point< Real , Dim >::SquareNorm( c ) ) << "\t" ;
+		verbose_output << "( ";
+		for( int i=0 ; i<Dim ; i++ ) verbose_output << " " << std::setw(8) << std::setprecision(2) << std::scientific << c[i];
+		verbose_output << " )\n";
 	}
 	return iters;
 }

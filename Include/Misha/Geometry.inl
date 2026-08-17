@@ -216,13 +216,13 @@ Real SquareMatrix< Real , Dim >::trace( void ) const
 	return tr;
 }
 template< class Real , int Dim >
-SquareMatrix< Real , Dim > SquareMatrix< Real , Dim >::inverse( void ) const
+SquareMatrix< Real , Dim > SquareMatrix< Real , Dim >::inverse( std::ostream &warning_output ) const
 {
 	bool success;
-	return inverse( success );
+	return inverse( success, warning_output );
 }
 template< class Real , int Dim >
-SquareMatrix< Real , Dim > SquareMatrix< Real , Dim >::inverse( bool& success ) const
+SquareMatrix< Real , Dim > SquareMatrix< Real , Dim >::inverse( bool& success, std::ostream &warning_output ) const
 {
 #if 1
 	// Gaussian Elimination
@@ -234,7 +234,7 @@ SquareMatrix< Real , Dim > SquareMatrix< Real , Dim >::inverse( bool& success ) 
 		for( int j=i+1 ; j<Dim ; j++ ) if( fabs( xForm(i,j) )>v ) p = j , v = (Real)fabs( xForm(i,j) );
 		if( !v )
 		{
-			fprintf( stderr , "[WARNING] Failed to invert matrix\n" );
+			warning_output << "[WARNING] Failed to invert matrix\n";
 			success = false;
 			return SquareMatrix();
 		}
@@ -261,7 +261,7 @@ SquareMatrix< Real , Dim > SquareMatrix< Real , Dim >::inverse( bool& success ) 
 #endif
 }
 template< >
-SquareMatrix< float , 2 > SquareMatrix< float , 2 >::inverse( bool& success ) const
+SquareMatrix< float , 2 > SquareMatrix< float , 2 >::inverse( bool& success, std::ostream &warning_output ) const
 {
 	SquareMatrix iXForm;
 	float det = ( coords[0][0]*coords[1][1]-coords[0][1]*coords[1][0] );
@@ -275,7 +275,7 @@ SquareMatrix< float , 2 > SquareMatrix< float , 2 >::inverse( bool& success ) co
 	return iXForm;
 }
 template< >
-SquareMatrix< double , 2 > SquareMatrix< double , 2 >::inverse( bool& success ) const
+SquareMatrix< double , 2 > SquareMatrix< double , 2 >::inverse( bool& success, std::ostream &warning_output ) const
 {
 	SquareMatrix iXForm;
 	double det = ( coords[0][0]*coords[1][1]-coords[0][1]*coords[1][0] );

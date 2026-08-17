@@ -157,10 +157,10 @@ namespace SphericalGeometry
 		};
 
 		FractionalLinearTransformation< Real > normalizer( int iters , double cutOff , bool gaussNewton , bool verbose=false ) const;
-		int normalize( int iters , double cutOff , bool gaussNewton , const CenterToInversion& c2i=CenterToInversion() , int verbose=0 );
+		int normalize( int iters , double cutOff , bool gaussNewton , const CenterToInversion& c2i=CenterToInversion() , int verbose=0 , std::ostream &verbose_output=std::cout , std::ostream &warning_output=std::cerr );
 
 		template< unsigned int SHDegree >
-		int normalizeSH( int iters , int advectionSteps , Real advectionStepSize , double cutOff , bool gaussNewton , int verbose=0 );
+		int normalizeSH( int iters , int advectionSteps , Real advectionStepSize , double cutOff , bool gaussNewton , int verbose=0 , std::ostream &verbose_output=std::cout , std::ostream &warning_output=std::cerr );
 
 		static Point3D< Real > SphericalInvert( Point3D< Real > p , Point3D< Real > c );
 	protected:
